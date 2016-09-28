@@ -1,19 +1,19 @@
 package nt.hai.themoviedb.ui.list;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import nt.hai.themoviedb.BuildConfig;
 import nt.hai.themoviedb.R;
 import nt.hai.themoviedb.data.model.Movie;
 import nt.hai.themoviedb.data.remote.RetrofitClient;
+import nt.hai.themoviedb.ui.base.BaseActivity;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private Subscriber<Movie> subscriber;
 
     @Override
