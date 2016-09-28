@@ -1,4 +1,4 @@
-package nt.hai.themoviedb;
+package nt.hai.themoviedb.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
