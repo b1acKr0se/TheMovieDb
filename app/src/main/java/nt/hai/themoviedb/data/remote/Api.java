@@ -1,10 +1,11 @@
-package nt.hai.themoviedb;
+package nt.hai.themoviedb.data.remote;
 
+import nt.hai.themoviedb.data.model.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
 
-interface Api {
+public interface Api {
     @GET("movie/popular")
     Observable<Response> getPopularMovies(@Query("api_key") String apiKey);
 }

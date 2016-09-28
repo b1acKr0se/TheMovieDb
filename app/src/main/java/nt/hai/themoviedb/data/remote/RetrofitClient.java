@@ -1,4 +1,4 @@
-package nt.hai.themoviedb;
+package nt.hai.themoviedb.data.remote;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
