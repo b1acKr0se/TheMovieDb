@@ -17,8 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:background="@color/gray300"
-            android:scaleType="centerCrop"
-            android:src="@drawable/poster"/>
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/title"

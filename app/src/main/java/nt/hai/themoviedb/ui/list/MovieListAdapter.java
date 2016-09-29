@@ -84,7 +84,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return list.size();
     }
 
-    private static class MovieViewHolder extends RecyclerView.ViewHolder {
+    static class MovieViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.poster) ImageView poster;
         @BindView(R.id.title) TextView title;
         @BindView(R.id.year) TextView year;
