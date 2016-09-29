@@ -2,8 +2,6 @@ package nt.hai.themoviedb.ui.list;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import nt.hai.themoviedb.BuildConfig;
 import nt.hai.themoviedb.data.model.Movie;
 import nt.hai.themoviedb.data.remote.RetrofitClient;
@@ -18,7 +16,6 @@ import rx.subscriptions.CompositeSubscription;
 public class MovieListPresenter extends Presenter<MovieListView> {
     private final CompositeSubscription subscription;
 
-    @Inject
     public MovieListPresenter() {
         subscription = new CompositeSubscription();
     }

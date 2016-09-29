@@ -6,14 +6,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,7 +22,7 @@ import nt.hai.themoviedb.data.model.Movie;
 public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, MovieListView {
     @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
-    @Inject MovieListPresenter presenter;
+    MovieListPresenter presenter = new MovieListPresenter();
     private MovieListAdapter adapter;
     private List<Movie> movies = new ArrayList<>();
 
@@ -39,8 +38,11 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         ButterKnife.bind(this, view);
         presenter.attachView(this);
         adapter = new MovieListAdapter(movies);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        StaggeredGridLayoutManager staggeredGridLayoutManager =
+                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
         recyclerView.setAdapter(adapter);
+        swipeRefreshLayout.setOnRefreshListener(this);
         showProgress(true);
         return view;
     }
@@ -53,8 +55,13 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void showProgress(boolean show) {
-        if (show) swipeRefreshLayout.setRefreshing(true);
-        else swipeRefreshLayout.setRefreshing(false);
+        if (show) {
+            swipeRefreshLayout.post(() -> {
+                swipeRefreshLayout.setRefreshing(true);
+                onRefresh();
+            });
+        } else
+            swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
