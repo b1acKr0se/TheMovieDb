@@ -5,4 +5,6 @@
     <color name="colorAccent">#2ABC7B</color>
     <color name="gray300">#E0E0E0</color>
     <color name="materialWhiteText">#B3FFFFFF</color>
+    <color name="materialDarkText">#B3000000</color>
+
 </resources>

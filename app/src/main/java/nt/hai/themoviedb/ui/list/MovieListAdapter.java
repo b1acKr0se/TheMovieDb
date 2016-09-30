@@ -44,7 +44,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new MovieViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_movie, parent, false));
+        return new MovieViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_movie, parent, false), onMovieClickListener);
     }
 
     @Override
@@ -52,6 +52,8 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if(holder instanceof MovieViewHolder) {
             MovieViewHolder viewHolder = (MovieViewHolder) holder;
             Movie movie = list.get(position);
+            viewHolder.movie = movie;
+            viewHolder.itemView.setOnClickListener(viewHolder);
             viewHolder.title.setText(movie.getTitle());
             viewHolder.year.setText(movie.getReleaseDate().split("-")[0]);
             Glide.clear(viewHolder.poster);
@@ -84,14 +86,22 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return list.size();
     }
 
-    static class MovieViewHolder extends RecyclerView.ViewHolder {
+    static class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         @BindView(R.id.poster) ImageView poster;
         @BindView(R.id.title) TextView title;
         @BindView(R.id.year) TextView year;
+        private Movie movie;
+        private OnMovieClickListener onMovieClickListener;
 
-        public MovieViewHolder(View itemView) {
+        public MovieViewHolder(View itemView, OnMovieClickListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            this.onMovieClickListener = listener;
+        }
+
+        @Override
+        public void onClick(View view) {
+            onMovieClickListener.onMovieClicked(movie);
         }
     }
 

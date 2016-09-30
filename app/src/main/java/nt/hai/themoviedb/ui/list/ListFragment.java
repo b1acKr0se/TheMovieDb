@@ -1,6 +1,7 @@
 package nt.hai.themoviedb.ui.list;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,8 +19,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import nt.hai.themoviedb.R;
 import nt.hai.themoviedb.data.model.Movie;
+import nt.hai.themoviedb.ui.detail.DetailActivity;
 
-public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, MovieListView {
+public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, MovieListView, MovieListAdapter.OnMovieClickListener {
     @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
     MovieListPresenter presenter = new MovieListPresenter();
@@ -38,6 +40,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         ButterKnife.bind(this, view);
         presenter.attachView(this);
         adapter = new MovieListAdapter(movies);
+        adapter.setOnMovieClickListener(this);
         StaggeredGridLayoutManager staggeredGridLayoutManager =
                 new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
@@ -80,5 +83,10 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
+    }
+
+    @Override
+    public void onMovieClicked(Movie movie) {
+        startActivity(new Intent(getActivity(), DetailActivity.class));
     }
 }
