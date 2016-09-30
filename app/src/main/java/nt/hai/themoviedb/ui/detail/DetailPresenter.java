@@ -4,13 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
 import nt.hai.themoviedb.BuildConfig;
-import nt.hai.themoviedb.data.model.Cast;
+import nt.hai.themoviedb.data.model.CastResponse;
 import nt.hai.themoviedb.data.remote.RetrofitClient;
 import nt.hai.themoviedb.ui.base.Presenter;
 import rx.Observable;
@@ -20,15 +19,15 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 
-public class DetailPresenter extends Presenter<DetailView> {
+class DetailPresenter extends Presenter<DetailView> {
     private CompositeSubscription subscription;
     private int movieId;
 
-    public DetailPresenter() {
+    DetailPresenter() {
         subscription = new CompositeSubscription();
     }
 
-    public void setMovieId(int id) {
+    void setMovieId(int id) {
         this.movieId = id;
     }
 
@@ -38,41 +37,36 @@ public class DetailPresenter extends Presenter<DetailView> {
         subscription.unsubscribe();
     }
 
-    public void loadCast() {
+    void loadCast() {
         subscription.add(
                 getCastListJsonObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .flatMap(s -> {
-                    JsonParser jsonParser = new JsonParser();
-                    JsonObject object = (JsonObject)jsonParser.parse(s);
-                    JsonArray jsonArr = object.getAsJsonArray("cast");
-                    Type listType = new TypeToken<List<Cast>>() {}.getType();
-                    List<Cast> jsonObjList = new Gson().fromJson(jsonArr, listType);
-                    return Observable.from(jsonObjList);
-                })
-                .filter(cast -> cast.getProfilePath() != null)
-                .toList()
-                .subscribe(new Subscriber<List<Cast>>() {
-                    @Override
-                    public void onCompleted() {
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .flatMap(castResponse -> Observable.from(castResponse.getCast()))
+                        .filter(cast -> cast.getProfilePath() != null)
+                        .toList()
+                        .subscribe(new Subscriber<List<CastResponse.Cast>>() {
+                            @Override
+                            public void onCompleted() {
 
-                    }
+                            }
 
-                    @Override
-                    public void onError(Throwable e) {
+                            @Override
+                            public void onError(Throwable e) {
+                                getView().showLoadingCast(false);
+                                e.printStackTrace();
+                            }
 
-                    }
-
-                    @Override
-                    public void onNext(List<Cast> list) {
-                        getView().showCast(list);
-                    }
-                })
+                            @Override
+                            public void onNext(List<CastResponse.Cast> list) {
+                                getView().showLoadingCast(false);
+                                getView().showCast(list);
+                            }
+                        })
         );
     }
 
-    private Observable<String> getCastListJsonObservable() {
+    private Observable<CastResponse> getCastListJsonObservable() {
         return RetrofitClient.getClient()
                 .getCastList(movieId, BuildConfig.API_KEY);
     }
