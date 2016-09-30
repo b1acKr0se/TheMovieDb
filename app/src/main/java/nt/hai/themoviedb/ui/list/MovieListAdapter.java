@@ -73,6 +73,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             Palette palette = new Palette.Builder(bitmap).generate();
                             int defaultColor = 0xFF333333;
                             int color = palette.getDarkMutedColor(defaultColor);
+                            list.get(position).setBackgroundColor(color);
                             holder.itemView.setBackgroundColor(color);
                             return false;
                         }
@@ -101,11 +102,11 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         @Override
         public void onClick(View view) {
-            onMovieClickListener.onMovieClicked(movie);
+            onMovieClickListener.onMovieClicked(movie, view);
         }
     }
 
     public interface OnMovieClickListener {
-        void onMovieClicked(Movie movie);
+        void onMovieClicked(Movie movie, View view);
     }
 }

@@ -1,9 +1,13 @@
 package nt.hai.themoviedb.ui.list;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +15,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +91,15 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     @Override
-    public void onMovieClicked(Movie movie) {
-        startActivity(new Intent(getActivity(), DetailActivity.class));
+    public void onMovieClicked(Movie movie, View view) {
+        startAnimatedTransitionIntent(getActivity(), view, movie);
+    }
+
+    private static void startAnimatedTransitionIntent(Activity context, View view, Movie movie) {
+        Intent intent = new Intent(context, DetailActivity.class);
+        intent.putExtra("movie", movie);
+        View coverStartView = view.findViewById(R.id.poster);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(context, coverStartView, "poster");
+        ActivityCompat.startActivity(context, intent, options.toBundle());
     }
 }
