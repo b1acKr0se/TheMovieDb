@@ -59,7 +59,7 @@ public class MovieListPresenter extends Presenter<MovieListView> {
 
     private Observable<List<Movie>> getMovieObservable() {
         return RetrofitClient.getClient()
-                .getPopularMovies(BuildConfig.API_KEY)
+                .getNowPlayingMovies(BuildConfig.API_KEY)
                 .flatMap(response -> Observable.just(response.getResults()));
     }
 }

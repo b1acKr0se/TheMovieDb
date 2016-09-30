@@ -52,8 +52,8 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if(holder instanceof MovieViewHolder) {
             MovieViewHolder viewHolder = (MovieViewHolder) holder;
             Movie movie = list.get(position);
-            viewHolder.title.setText(movie.getOriginalTitle());
-            viewHolder.year.setText(movie.getReleaseDate());
+            viewHolder.title.setText(movie.getTitle());
+            viewHolder.year.setText(movie.getReleaseDate().split("-")[0]);
             Glide.clear(viewHolder.poster);
             Glide.with(viewHolder.poster.getContext())
                     .load(UrlBuilder.getPosterUrl(movie.getPosterPath()))
