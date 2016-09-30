@@ -1,6 +1,7 @@
 package nt.hai.themoviedb.ui.list;
 
 import android.graphics.Bitmap;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -44,17 +45,20 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new MovieViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_movie, parent, false));
+        return new MovieViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_movie, parent, false), onMovieClickListener);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if(holder instanceof MovieViewHolder) {
+        if (holder instanceof MovieViewHolder) {
             MovieViewHolder viewHolder = (MovieViewHolder) holder;
             Movie movie = list.get(position);
-            viewHolder.title.setText(movie.getOriginalTitle());
-            viewHolder.year.setText(movie.getReleaseDate());
+            viewHolder.movie = movie;
+            viewHolder.itemView.setOnClickListener(viewHolder);
+            viewHolder.title.setText(movie.getTitle());
+            viewHolder.year.setText(movie.getReleaseDate().split("-")[0]);
             Glide.clear(viewHolder.poster);
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(viewHolder.poster.getContext(), R.color.colorPrimary));
             Glide.with(viewHolder.poster.getContext())
                     .load(UrlBuilder.getPosterUrl(movie.getPosterPath()))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -71,6 +75,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             Palette palette = new Palette.Builder(bitmap).generate();
                             int defaultColor = 0xFF333333;
                             int color = palette.getDarkMutedColor(defaultColor);
+                            list.get(position).setBackgroundColor(color);
                             holder.itemView.setBackgroundColor(color);
                             return false;
                         }
@@ -84,18 +89,26 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return list.size();
     }
 
-    static class MovieViewHolder extends RecyclerView.ViewHolder {
+    static class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.poster) ImageView poster;
         @BindView(R.id.title) TextView title;
         @BindView(R.id.year) TextView year;
+        private Movie movie;
+        private OnMovieClickListener onMovieClickListener;
 
-        public MovieViewHolder(View itemView) {
+        public MovieViewHolder(View itemView, OnMovieClickListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            this.onMovieClickListener = listener;
+        }
+
+        @Override
+        public void onClick(View view) {
+            onMovieClickListener.onMovieClicked(movie, view);
         }
     }
 
-    public interface OnMovieClickListener {
-        void onMovieClicked(Movie movie);
+    interface OnMovieClickListener {
+        void onMovieClicked(Movie movie, View view);
     }
 }

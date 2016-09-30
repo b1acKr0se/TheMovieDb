@@ -17,7 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:background="@color/gray300"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:transitionName="poster"/>
 
         <TextView
             android:id="@+id/title"
@@ -35,11 +36,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:maxLines="1"
+            android:paddingBottom="8dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="8dp"
             android:textColor="@color/materialWhiteText"/>
 
     </LinearLayout>
