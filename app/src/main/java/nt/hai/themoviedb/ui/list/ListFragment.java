@@ -4,6 +4,7 @@ package nt.hai.themoviedb.ui.list;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -32,11 +33,15 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     MovieListPresenter presenter = new MovieListPresenter();
     private MovieListAdapter adapter;
     private List<Movie> movies = new ArrayList<>();
+    private Callback callback;
 
     public ListFragment() {
         // Required empty public constructor
     }
 
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -92,7 +97,8 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onMovieClicked(Movie movie, View view) {
-        startAnimatedTransitionIntent(getActivity(), view, movie);
+        callback.onSceneTransitionStarted();
+        new Handler().postDelayed(() -> startAnimatedTransitionIntent(getActivity(), view, movie), 200);
     }
 
     private static void startAnimatedTransitionIntent(Activity context, View view, Movie movie) {
@@ -101,5 +107,9 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         View coverStartView = view.findViewById(R.id.poster);
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(context, coverStartView, "poster");
         ActivityCompat.startActivity(context, intent, options.toBundle());
+    }
+
+    interface Callback {
+        void onSceneTransitionStarted();
     }
 }

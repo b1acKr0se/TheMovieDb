@@ -36,6 +36,11 @@ public class DetailActivity extends AppCompatActivity {
                 .dontAnimate()
                 .dontTransform()
                 .into(poster);
+        Glide.with(this)
+                .load(UrlBuilder.getBackdropUrl(movie.getBackdropPath()))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .dontAnimate()
+                .into(backdrop);
         container.setBackgroundColor(movie.getBackgroundColor());
         title.setText(movie.getTitle());
         releaseDate.setText(movie.getReleaseDate());
