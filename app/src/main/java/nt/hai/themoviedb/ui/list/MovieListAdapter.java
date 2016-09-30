@@ -1,6 +1,7 @@
 package nt.hai.themoviedb.ui.list;
 
 import android.graphics.Bitmap;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -49,7 +50,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if(holder instanceof MovieViewHolder) {
+        if (holder instanceof MovieViewHolder) {
             MovieViewHolder viewHolder = (MovieViewHolder) holder;
             Movie movie = list.get(position);
             viewHolder.movie = movie;
@@ -57,6 +58,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             viewHolder.title.setText(movie.getTitle());
             viewHolder.year.setText(movie.getReleaseDate().split("-")[0]);
             Glide.clear(viewHolder.poster);
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(viewHolder.poster.getContext(), R.color.colorPrimary));
             Glide.with(viewHolder.poster.getContext())
                     .load(UrlBuilder.getPosterUrl(movie.getPosterPath()))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -87,7 +89,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return list.size();
     }
 
-    static class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    static class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.poster) ImageView poster;
         @BindView(R.id.title) TextView title;
         @BindView(R.id.year) TextView year;
@@ -106,7 +108,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    public interface OnMovieClickListener {
+    interface OnMovieClickListener {
         void onMovieClicked(Movie movie, View view);
     }
 }

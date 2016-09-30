@@ -13,6 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import nt.hai.themoviedb.R;
 import nt.hai.themoviedb.data.model.Movie;
+import nt.hai.themoviedb.util.DateUtil;
 import nt.hai.themoviedb.util.UrlBuilder;
 
 public class DetailActivity extends AppCompatActivity {
@@ -41,10 +42,12 @@ public class DetailActivity extends AppCompatActivity {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .dontAnimate()
                 .into(backdrop);
-        container.setBackgroundColor(movie.getBackgroundColor());
+
+        if (movie.getBackgroundColor() != 0)
+            container.setBackgroundColor(movie.getBackgroundColor());
         title.setText(movie.getTitle());
-        releaseDate.setText(movie.getReleaseDate());
+        releaseDate.setText(DateUtil.format(movie.getReleaseDate()));
         overview.setText(movie.getOverview());
-        rating.setText(movie.getVoteAverage() + " from " + movie.getVoteCount() + " votes.");
+        rating.setText(movie.getVoteAverage() + " from " + movie.getVoteCount() + " votes");
     }
 }
