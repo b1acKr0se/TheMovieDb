@@ -20,7 +20,6 @@ import butterknife.ButterKnife;
 import nt.hai.themoviedb.R;
 import nt.hai.themoviedb.data.model.CastResponse;
 import nt.hai.themoviedb.data.model.Movie;
-import nt.hai.themoviedb.ui.widget.DividerItemDecoration;
 import nt.hai.themoviedb.util.DateUtil;
 import nt.hai.themoviedb.util.UrlBuilder;
 
@@ -72,6 +71,12 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
+
+    @Override
     public void showLoadingCast(boolean show) {
         if (show) progressBar.setVisibility(View.VISIBLE);
         else progressBar.setVisibility(View.GONE);
@@ -79,7 +84,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
 
     @Override
     public void showErrorLoadingCast() {
-
+        
     }
 
     @Override
