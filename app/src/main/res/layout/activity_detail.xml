@@ -109,29 +109,51 @@
                 android:padding="8dp"
                 android:textColor="@color/materialDarkText"/>
 
-            <TextView
-                style="@style/TextAppearance.AppCompat.Headline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:text="Casts"
-                android:textSize="16dp"/>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/cast_recycler_view"
+            <android.support.v7.widget.CardView
+                android:id="@+id/cast_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:overScrollMode="never"
-                android:padding="4dp"
-                android:visibility="gone"/>
+                android:layout_marginBottom="1dp"
+                android:layout_marginTop="1dp"
+                app:cardCornerRadius="0dp">
 
-            <ProgressBar
-                android:id="@+id/cast_progress_bar"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="8dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/TextAppearance.AppCompat.Headline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="8dp"
+                        android:paddingTop="8dp"
+                        android:text="CAST"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="16dp"
+                        android:textStyle="bold"/>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/cast_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:overScrollMode="never"
+                        android:paddingBottom="8dp"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp"
+                        android:paddingTop="8dp"
+                        android:visibility="gone"/>
+
+                    <ProgressBar
+                        android:id="@+id/cast_progress_bar"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="8dp"/>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
 
         </LinearLayout>
 

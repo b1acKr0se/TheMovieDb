@@ -1,6 +1,7 @@
 package nt.hai.themoviedb.ui.detail;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,9 +18,11 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import nt.hai.themoviedb.R;
 import nt.hai.themoviedb.data.model.CastResponse;
 import nt.hai.themoviedb.data.model.Movie;
+import nt.hai.themoviedb.ui.castlist.CastFragment;
 import nt.hai.themoviedb.util.DateUtil;
 import nt.hai.themoviedb.util.UrlBuilder;
 
@@ -63,12 +66,19 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         overview.setText(movie.getOverview());
         rating.setText(movie.getVoteAverage() + " from " + movie.getVoteCount() + " votes");
 
-        adapter = new CastAdapter(casts);
+        adapter = new CastAdapter(casts, CastAdapter.TYPE_SUMMARY);
         castRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         castRecyclerView.setAdapter(adapter);
         presenter.setMovieId(movie.getId());
         presenter.loadCast();
     }
+
+    private void showCastDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        CastFragment castFragment = CastFragment.newInstance(casts);
+        castFragment.show(fm, "fragment_cast");
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -93,5 +103,10 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         casts.clear();
         casts.addAll(list);
         adapter.notifyDataSetChanged();
+    }
+
+    @OnClick(R.id.cast_container)
+    void onCastContainerClicked() {
+        showCastDialog();
     }
 }

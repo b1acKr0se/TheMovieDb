@@ -16,6 +16,6 @@ public class UrlBuilder {
     }
 
     public static String getCastUrl(String path) {
-        return String.format(Locale.getDefault(), BASE_POSTER_URL, 185, path);
+        return String.format(Locale.getDefault(), BASE_POSTER_URL, 342, path);
     }
 }
