@@ -63,7 +63,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         overview.setText(movie.getOverview());
         rating.setText(movie.getVoteAverage() + " from " + movie.getVoteCount() + " votes");
 
-        adapter = new CastAdapter(casts);
+        adapter = new CastAdapter(casts, CastAdapter.TYPE_SUMMARY);
         castRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         castRecyclerView.setAdapter(adapter);
         presenter.setMovieId(movie.getId());

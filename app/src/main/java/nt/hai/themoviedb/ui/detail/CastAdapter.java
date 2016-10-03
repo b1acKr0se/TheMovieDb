@@ -1,6 +1,8 @@
 package nt.hai.themoviedb.ui.detail;
 
 import android.graphics.Bitmap;
+import android.support.annotation.IntDef;
+import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +15,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 import butterknife.BindView;
@@ -22,16 +26,21 @@ import nt.hai.themoviedb.data.model.CastResponse;
 import nt.hai.themoviedb.util.UrlBuilder;
 
 
-class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder> {
-    private List<CastResponse.Cast> casts;
+public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder> {
+    public static final int TYPE_SUMMARY = 1;
+    public static final int TYPE_FULL = 2;
 
-    CastAdapter(List<CastResponse.Cast> list) {
+    private List<CastResponse.Cast> casts;
+    private int type;
+
+    public CastAdapter(List<CastResponse.Cast> list, @TypeDef int typeDef) {
         casts = list;
+        type = typeDef;
     }
 
     @Override
     public CastViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new CastViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_cast, parent, false));
+        return new CastViewHolder(LayoutInflater.from(parent.getContext()).inflate(type == TYPE_SUMMARY ? R.layout.item_cast : R.layout.item_cast_table, parent, false));
     }
 
     @Override
@@ -49,6 +58,11 @@ class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder> {
                         holder.image.setImageDrawable(circularBitmapDrawable);
                     }
                 });
+        if (type == TYPE_FULL) {
+            holder.name.setText(cast.getName());
+            holder.character.setText(cast.getCharacter());
+        }
+
     }
 
     @Override
@@ -58,10 +72,20 @@ class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder> {
 
     static class CastViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.cast_image) ImageView image;
+        @Nullable @BindView(R.id.name) TextView name;
+        @Nullable @BindView(R.id.character) TextView character;
 
         CastViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({
+            TYPE_SUMMARY,
+            TYPE_FULL
+    })
+    @interface TypeDef {
     }
 }
