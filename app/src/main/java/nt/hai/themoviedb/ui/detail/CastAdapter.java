@@ -40,27 +40,31 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
 
     @Override
     public CastViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new CastViewHolder(LayoutInflater.from(parent.getContext()).inflate(type == TYPE_SUMMARY ? R.layout.item_cast : R.layout.item_cast_table, parent, false));
+        View view = LayoutInflater.from(parent.getContext()).inflate(type == TYPE_SUMMARY ? R.layout.item_cast : R.layout.item_cast_table, parent, false);
+        return new CastViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(CastViewHolder holder, int position) {
         CastResponse.Cast cast = casts.get(position);
-        Glide.with(holder.itemView.getContext()).load(UrlBuilder.getCastUrl(cast.getProfilePath()))
-                .asBitmap()
-                .centerCrop()
-                .into(new BitmapImageViewTarget(holder.image) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(holder.itemView.getContext().getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        holder.image.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
         if (type == TYPE_FULL) {
+            Glide.with(holder.itemView.getContext()).load(UrlBuilder.getCastUrl(cast.getProfilePath()))
+                    .into(holder.image);
             holder.name.setText(cast.getName());
             holder.character.setText(cast.getCharacter());
+        } else {
+            Glide.with(holder.itemView.getContext()).load(UrlBuilder.getCastUrl(cast.getProfilePath()))
+                    .asBitmap()
+                    .centerCrop()
+                    .into(new BitmapImageViewTarget(holder.image) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable circularBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.create(holder.itemView.getContext().getResources(), resource);
+                            circularBitmapDrawable.setCircular(true);
+                            holder.image.setImageDrawable(circularBitmapDrawable);
+                        }
+                    });
         }
 
     }
@@ -78,6 +82,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
         CastViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            setIsRecyclable(false);
         }
     }
 
