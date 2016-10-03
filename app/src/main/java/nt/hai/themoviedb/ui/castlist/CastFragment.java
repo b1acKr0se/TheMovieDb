@@ -36,6 +36,12 @@ public class CastFragment extends DialogFragment {
         return fragment;
     }
 
+    @Override
+    public void onActivityCreated(Bundle arg0) {
+        super.onActivityCreated(arg0);
+        getDialog().getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
