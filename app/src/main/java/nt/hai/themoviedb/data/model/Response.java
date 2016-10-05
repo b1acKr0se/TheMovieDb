@@ -14,7 +14,7 @@ public class Response {
     private Integer page;
     @SerializedName("results")
     @Expose
-    private List<Movie> results = new ArrayList<Movie>();
+    private List<Media> results = new ArrayList<Media>();
     @SerializedName("total_pages")
     @Expose
     private Integer totalPages;
@@ -45,7 +45,7 @@ public class Response {
      * @return
      * The results
      */
-    public List<Movie> getResults() {
+    public List<Media> getResults() {
         return results;
     }
 
@@ -54,7 +54,7 @@ public class Response {
      * @param results
      * The results
      */
-    public void setResults(List<Movie> results) {
+    public void setResults(List<Media> results) {
         this.results = results;
     }
 

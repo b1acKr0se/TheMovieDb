@@ -10,9 +10,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,10 +17,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import nt.hai.themoviedb.R;
-import nt.hai.themoviedb.data.model.CastResponse;
-import nt.hai.themoviedb.data.model.Movie;
+import nt.hai.themoviedb.data.model.DetailResponse;
+import nt.hai.themoviedb.data.model.Media;
 import nt.hai.themoviedb.ui.castlist.CastFragment;
 import nt.hai.themoviedb.util.DateUtil;
+import nt.hai.themoviedb.util.GlideUtil;
 import nt.hai.themoviedb.util.UrlBuilder;
 
 public class DetailActivity extends AppCompatActivity implements DetailView {
@@ -38,7 +36,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     @BindView(R.id.cast_progress_bar) ProgressBar progressBar;
     private DetailPresenter presenter = new DetailPresenter();
     private CastAdapter adapter;
-    private List<CastResponse.Cast> casts = new ArrayList<>();
+    private List<DetailResponse.Cast> casts = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,30 +44,19 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
         presenter.attachView(this);
-        Movie movie = getIntent().getParcelableExtra("movie");
-        Glide.with(this)
-                .load(UrlBuilder.getPosterUrl(movie.getPosterPath()))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .dontAnimate()
-                .dontTransform()
-                .into(poster);
-        Glide.with(this)
-                .load(UrlBuilder.getBackdropUrl(movie.getBackdropPath()))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .dontAnimate()
-                .into(backdrop);
-
-        if (movie.getBackgroundColor() != 0)
-            container.setBackgroundColor(movie.getBackgroundColor());
-        title.setText(movie.getTitle());
-        releaseDate.setText(DateUtil.format(movie.getReleaseDate()));
-        overview.setText(movie.getOverview());
-        rating.setText(movie.getVoteAverage() + " from " + movie.getVoteCount() + " votes");
-
+        Media media = getIntent().getParcelableExtra("media");
+        GlideUtil.load(this, UrlBuilder.getPosterUrl(media.getPosterPath()), poster);
+        GlideUtil.load(this, UrlBuilder.getBackdropUrl(media.getBackdropPath()), backdrop);
+        if (media.getBackgroundColor() != 0)
+            container.setBackgroundColor(media.getBackgroundColor());
+        title.setText(media.getTitle());
+        releaseDate.setText(DateUtil.format(media.getReleaseDate()));
+        overview.setText(media.getOverview());
+        rating.setText(media.getVoteAverage() + " from " + media.getVoteCount() + " votes");
         adapter = new CastAdapter(casts, CastAdapter.TYPE_SUMMARY);
         castRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         castRecyclerView.setAdapter(adapter);
-        presenter.setMovieId(movie.getId());
+        presenter.setMovieId(media.getId());
         presenter.loadCast();
     }
 
@@ -98,7 +85,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     }
 
     @Override
-    public void showCast(List<CastResponse.Cast> list) {
+    public void showCast(List<DetailResponse.Cast> list) {
         castRecyclerView.setVisibility(View.VISIBLE);
         casts.clear();
         casts.addAll(list);

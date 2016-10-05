@@ -3,7 +3,7 @@ package nt.hai.themoviedb.ui.list;
 import java.util.List;
 
 import nt.hai.themoviedb.BuildConfig;
-import nt.hai.themoviedb.data.model.Movie;
+import nt.hai.themoviedb.data.model.Media;
 import nt.hai.themoviedb.data.remote.RetrofitClient;
 import nt.hai.themoviedb.ui.base.Presenter;
 import rx.Observable;
@@ -36,7 +36,7 @@ public class MovieListPresenter extends Presenter<MovieListView> {
                 getMovieObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<List<Movie>>() {
+                .subscribe(new Subscriber<List<Media>>() {
                     @Override
                     public void onCompleted() {
 
@@ -49,7 +49,7 @@ public class MovieListPresenter extends Presenter<MovieListView> {
                     }
 
                     @Override
-                    public void onNext(List<Movie> movies) {
+                    public void onNext(List<Media> movies) {
                         getView().showProgress(false);
                         getView().showMovies(movies);
                     }
@@ -57,7 +57,7 @@ public class MovieListPresenter extends Presenter<MovieListView> {
         );
     }
 
-    private Observable<List<Movie>> getMovieObservable() {
+    private Observable<List<Media>> getMovieObservable() {
         return RetrofitClient.getClient()
                 .getNowPlayingMovies(BuildConfig.API_KEY)
                 .flatMap(response -> Observable.just(response.getResults()));

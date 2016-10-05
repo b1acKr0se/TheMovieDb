@@ -22,7 +22,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nt.hai.themoviedb.R;
-import nt.hai.themoviedb.data.model.CastResponse;
+import nt.hai.themoviedb.data.model.DetailResponse;
+import nt.hai.themoviedb.util.GlideUtil;
 import nt.hai.themoviedb.util.UrlBuilder;
 
 
@@ -30,10 +31,10 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
     public static final int TYPE_SUMMARY = 1;
     public static final int TYPE_FULL = 2;
 
-    private List<CastResponse.Cast> casts;
+    private List<DetailResponse.Cast> casts;
     private int type;
 
-    public CastAdapter(List<CastResponse.Cast> list, @TypeDef int typeDef) {
+    public CastAdapter(List<DetailResponse.Cast> list, @TypeDef int typeDef) {
         casts = list;
         type = typeDef;
     }
@@ -46,10 +47,9 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
 
     @Override
     public void onBindViewHolder(CastViewHolder holder, int position) {
-        CastResponse.Cast cast = casts.get(position);
+        DetailResponse.Cast cast = casts.get(position);
         if (type == TYPE_FULL) {
-            Glide.with(holder.itemView.getContext()).load(UrlBuilder.getCastUrl(cast.getProfilePath()))
-                    .into(holder.image);
+            GlideUtil.load(holder.itemView.getContext(), UrlBuilder.getCastUrl(cast.getProfilePath()), holder.image);
             holder.name.setText(cast.getName());
             holder.character.setText(cast.getCharacter());
         } else {

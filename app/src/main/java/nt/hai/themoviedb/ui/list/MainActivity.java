@@ -5,19 +5,11 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import nt.hai.themoviedb.BuildConfig;
 import nt.hai.themoviedb.R;
-import nt.hai.themoviedb.data.model.Movie;
-import nt.hai.themoviedb.data.remote.RetrofitClient;
 import nt.hai.themoviedb.ui.base.BaseActivity;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity implements ListFragment.Callback {
 
