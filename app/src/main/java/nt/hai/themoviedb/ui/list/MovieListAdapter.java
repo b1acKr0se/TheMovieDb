@@ -22,15 +22,15 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nt.hai.themoviedb.R;
-import nt.hai.themoviedb.data.model.Movie;
+import nt.hai.themoviedb.data.model.Media;
 import nt.hai.themoviedb.util.UrlBuilder;
 
 public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int VIEW_ITEM = 1;
-    private List<Movie> list;
+    private List<Media> list;
     private OnMovieClickListener onMovieClickListener;
 
-    public MovieListAdapter(List<Movie> movies) {
+    public MovieListAdapter(List<Media> movies) {
         this.list = movies;
     }
 
@@ -52,15 +52,15 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof MovieViewHolder) {
             MovieViewHolder viewHolder = (MovieViewHolder) holder;
-            Movie movie = list.get(position);
-            viewHolder.movie = movie;
+            Media media = list.get(position);
+            viewHolder.media = media;
             viewHolder.itemView.setOnClickListener(viewHolder);
-            viewHolder.title.setText(movie.getTitle());
-            viewHolder.year.setText(movie.getReleaseDate().split("-")[0]);
+            viewHolder.title.setText(media.getTitle());
+            viewHolder.year.setText(media.getReleaseDate().split("-")[0]);
             Glide.clear(viewHolder.poster);
             holder.itemView.setBackgroundColor(ContextCompat.getColor(viewHolder.poster.getContext(), R.color.colorPrimary));
             Glide.with(viewHolder.poster.getContext())
-                    .load(UrlBuilder.getPosterUrl(movie.getPosterPath()))
+                    .load(UrlBuilder.getPosterUrl(media.getPosterPath()))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .dontAnimate()
                     .listener(new RequestListener<String, GlideDrawable>() {
@@ -93,7 +93,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         @BindView(R.id.poster) ImageView poster;
         @BindView(R.id.title) TextView title;
         @BindView(R.id.year) TextView year;
-        private Movie movie;
+        private Media media;
         private OnMovieClickListener onMovieClickListener;
 
         public MovieViewHolder(View itemView, OnMovieClickListener listener) {
@@ -104,11 +104,11 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         @Override
         public void onClick(View view) {
-            onMovieClickListener.onMovieClicked(movie, view);
+            onMovieClickListener.onMovieClicked(media, view);
         }
     }
 
     interface OnMovieClickListener {
-        void onMovieClicked(Movie movie, View view);
+        void onMovieClicked(Media media, View view);
     }
 }

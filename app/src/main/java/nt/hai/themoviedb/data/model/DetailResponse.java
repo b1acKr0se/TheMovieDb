@@ -9,13 +9,23 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CastResponse {
+public class DetailResponse {
     @SerializedName("id")
     @Expose
     private Integer id;
     @SerializedName("cast")
     @Expose
-    private List<Cast> cast = new ArrayList<Cast>();
+    private List<Cast> cast = new ArrayList<>();
+    @SerializedName("backdrops")
+    @Expose
+    private List<Image> backdrops = new ArrayList<>();
+    @SerializedName("posters")
+    @Expose
+    private List<Image> posters = new ArrayList<>();
+
+    @SerializedName("results")
+    @Expose
+    private List<Video> videos = new ArrayList<>();
 
     /**
      * @return The id
@@ -43,6 +53,30 @@ public class CastResponse {
      */
     public void setCast(List<Cast> cast) {
         this.cast = cast;
+    }
+
+    public List<Image> getBackdrops() {
+        return backdrops;
+    }
+
+    public void setBackdrops(List<Image> backdrops) {
+        this.backdrops = backdrops;
+    }
+
+    public List<Image> getPosters() {
+        return posters;
+    }
+
+    public void setPosters(List<Image> posters) {
+        this.posters = posters;
+    }
+
+    public List<Video> getVideos() {
+        return videos;
+    }
+
+    public void setVideos(List<Video> videos) {
+        this.videos = videos;
     }
 
     public class Cast implements Parcelable {
@@ -210,10 +244,10 @@ public class CastResponse {
         }
 
         @SuppressWarnings("unused")
-        public final Parcelable.Creator<CastResponse.Cast> CREATOR = new Parcelable.Creator<CastResponse.Cast>() {
+        public final Parcelable.Creator<DetailResponse.Cast> CREATOR = new Parcelable.Creator<DetailResponse.Cast>() {
             @Override
             public Cast createFromParcel(Parcel in) {
-                return new CastResponse.Cast(in);
+                return new DetailResponse.Cast(in);
             }
 
             @Override
@@ -221,6 +255,53 @@ public class CastResponse {
                 return new Cast[size];
             }
         };
+    }
+    public class Image {
+        @SerializedName("file_path")
+        @Expose
+        private String filePath;
+
+        /**
+         *
+         * @return
+         * The filePath
+         */
+        public String getFilePath() {
+            return filePath;
+        }
+
+        /**
+         *
+         * @param filePath
+         * The file_path
+         */
+        public void setFilePath(String filePath) {
+            this.filePath = filePath;
+        }
+    }
+
+    public class Video {
+        @SerializedName("key")
+        @Expose
+        private String filePath;
+
+        /**
+         *
+         * @return
+         * The filePath
+         */
+        public String getFilePath() {
+            return filePath;
+        }
+
+        /**
+         *
+         * @param filePath
+         * The file_path
+         */
+        public void setFilePath(String filePath) {
+            this.filePath = filePath;
+        }
     }
 
 }

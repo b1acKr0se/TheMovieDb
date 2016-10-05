@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Movie implements Parcelable {
+public class Media implements Parcelable {
 
     @SerializedName("adult")
     @Expose
@@ -44,6 +44,10 @@ public class Movie implements Parcelable {
     @SerializedName("vote_count")
     @Expose
     private Integer voteCount;
+
+    @SerializedName("media_type")
+    @Expose
+    private String mediaType;
 
     private int backgroundColor;
 
@@ -271,9 +275,17 @@ public class Movie implements Parcelable {
         this.backgroundColor = backgroundColor;
     }
 
+    public String getMediaType() {
+        return mediaType;
+    }
+
+    public void setMediaType(String mediaType) {
+        this.mediaType = mediaType;
+    }
+
     @Override
     public String toString() {
-        return "Movie{" +
+        return "Media{" +
                 "adult=" + adult +
                 ", backdropPath='" + backdropPath + '\'' +
                 ", id=" + id +
@@ -289,7 +301,7 @@ public class Movie implements Parcelable {
                 '}';
     }
 
-    protected Movie(Parcel in) {
+    protected Media(Parcel in) {
         byte adultVal = in.readByte();
         adult = adultVal == 0x02 ? null : adultVal != 0x00;
         backdropPath = in.readString();
@@ -358,15 +370,15 @@ public class Movie implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+    public static final Parcelable.Creator<Media> CREATOR = new Parcelable.Creator<Media>() {
         @Override
-        public Movie createFromParcel(Parcel in) {
-            return new Movie(in);
+        public Media createFromParcel(Parcel in) {
+            return new Media(in);
         }
 
         @Override
-        public Movie[] newArray(int size) {
-            return new Movie[size];
+        public Media[] newArray(int size) {
+            return new Media[size];
         }
     };
 }

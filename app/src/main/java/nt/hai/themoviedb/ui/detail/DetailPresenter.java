@@ -1,20 +1,16 @@
 package nt.hai.themoviedb.ui.detail;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import java.lang.reflect.Type;
 import java.util.List;
 
 import nt.hai.themoviedb.BuildConfig;
-import nt.hai.themoviedb.data.model.CastResponse;
+import nt.hai.themoviedb.data.model.DetailResponse;
 import nt.hai.themoviedb.data.remote.RetrofitClient;
 import nt.hai.themoviedb.ui.base.Presenter;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -45,7 +41,7 @@ class DetailPresenter extends Presenter<DetailView> {
                         .flatMap(castResponse -> Observable.from(castResponse.getCast()))
                         .filter(cast -> cast.getProfilePath() != null)
                         .toList()
-                        .subscribe(new Subscriber<List<CastResponse.Cast>>() {
+                        .subscribe(new Subscriber<List<DetailResponse.Cast>>() {
                             @Override
                             public void onCompleted() {
 
@@ -58,7 +54,7 @@ class DetailPresenter extends Presenter<DetailView> {
                             }
 
                             @Override
-                            public void onNext(List<CastResponse.Cast> list) {
+                            public void onNext(List<DetailResponse.Cast> list) {
                                 getView().showLoadingCast(false);
                                 getView().showCast(list);
                             }
@@ -66,8 +62,50 @@ class DetailPresenter extends Presenter<DetailView> {
         );
     }
 
-    private Observable<CastResponse> getCastListJsonObservable() {
+    void loadImages() {
+        subscription.add(
+                Observable
+                        .zip(getImages(), getVideos(), (t1, t2) -> {
+                            DetailResponse response = new DetailResponse();
+                            response.setPosters(t1);
+                            response.setVideos(t2);
+                            return response;
+                        })
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnNext(detailResponse -> {
+                            getView().showLoadingCast(false);
+                        })
+                        .subscribe(new Subscriber<DetailResponse>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onNext(DetailResponse detailResponse) {
+
+                            }
+                        }));
+    }
+
+    private Observable<DetailResponse> getCastListJsonObservable() {
         return RetrofitClient.getClient()
                 .getCastList(movieId, BuildConfig.API_KEY);
+    }
+
+    private Observable<List<DetailResponse.Image>> getImages() {
+        return RetrofitClient.getClient().getImages(BuildConfig.API_KEY)
+                .flatMap(detailResponse -> Observable.just(detailResponse.getBackdrops(), detailResponse.getPosters()));
+    }
+
+    private Observable<List<DetailResponse.Video>> getVideos() {
+        return RetrofitClient.getClient().getVideos(BuildConfig.API_KEY)
+                .flatMap(detailResponse -> Observable.just(detailResponse.getVideos()));
     }
 }

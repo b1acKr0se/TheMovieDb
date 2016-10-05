@@ -16,21 +16,21 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nt.hai.themoviedb.R;
-import nt.hai.themoviedb.data.model.CastResponse;
+import nt.hai.themoviedb.data.model.DetailResponse;
 import nt.hai.themoviedb.ui.detail.CastAdapter;
 
 public class CastFragment extends DialogFragment {
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
-    private List<CastResponse.Cast> casts;
+    private List<DetailResponse.Cast> casts;
     private CastAdapter adapter;
 
     public CastFragment() {
 
     }
 
-    public static CastFragment newInstance(List<CastResponse.Cast> list) {
+    public static CastFragment newInstance(List<DetailResponse.Cast> list) {
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("cast", (ArrayList<CastResponse.Cast>) list);
+        bundle.putParcelableArrayList("cast", (ArrayList<DetailResponse.Cast>) list);
         CastFragment fragment = new CastFragment();
         fragment.setArguments(bundle);
         return fragment;

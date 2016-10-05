@@ -1,6 +1,6 @@
 package nt.hai.themoviedb.data.remote;
 
-import nt.hai.themoviedb.data.model.CastResponse;
+import nt.hai.themoviedb.data.model.DetailResponse;
 import nt.hai.themoviedb.data.model.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -15,5 +15,11 @@ public interface Api {
     Observable<Response> getNowPlayingMovies(@Query("api_key") String apiKey);
 
     @GET("movie/{movie_id}/credits")
-    Observable<CastResponse> getCastList(@Path("movie_id") int movieId, @Query("api_key") String apiKey);
- }
+    Observable<DetailResponse> getCastList(@Path("movie_id") int movieId, @Query("api_key") String apiKey);
+
+    @GET("movie/{movie_id}/images")
+    Observable<DetailResponse> getImages(@Query("api_key") String apiKey);
+
+    @GET("movie/{movie_id}/videos")
+    Observable<DetailResponse> getVideos(@Query("api_key") String apiKey);
+}
