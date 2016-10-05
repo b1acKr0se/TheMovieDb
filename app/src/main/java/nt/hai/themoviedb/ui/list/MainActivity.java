@@ -1,17 +1,22 @@
 package nt.hai.themoviedb.ui.list;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nt.hai.themoviedb.R;
 import nt.hai.themoviedb.ui.base.BaseActivity;
+import nt.hai.themoviedb.ui.search.SearchActivity;
 
-public class MainActivity extends BaseActivity implements ListFragment.Callback {
+public class MainActivity extends BaseActivity {
 
     @BindView(R.id.app_bar_layout) AppBarLayout appBarLayout;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -23,7 +28,6 @@ public class MainActivity extends BaseActivity implements ListFragment.Callback 
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         ListFragment fragment = new ListFragment();
-        fragment.setCallback(this);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container, fragment);
@@ -31,13 +35,24 @@ public class MainActivity extends BaseActivity implements ListFragment.Callback 
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-            appBarLayout.setExpanded(false, true);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    public void onSceneTransitionStarted() {
-        appBarLayout.setExpanded(false, true);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.search:
+                startActivity(new Intent(this, SearchActivity.class));
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+            appBarLayout.setExpanded(false, true);
     }
 }

@@ -1,11 +1,13 @@
 package nt.hai.themoviedb.ui.detail;
 
+import android.animation.Animator;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -47,6 +49,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         Media media = getIntent().getParcelableExtra("media");
         GlideUtil.load(this, UrlBuilder.getPosterUrl(media.getPosterPath()), poster);
         GlideUtil.load(this, UrlBuilder.getBackdropUrl(media.getBackdropPath()), backdrop);
+        doCircularReveal();
         if (media.getBackgroundColor() != 0)
             container.setBackgroundColor(media.getBackgroundColor());
         title.setText(media.getTitle());
@@ -66,6 +69,21 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         castFragment.show(fm, "fragment_cast");
     }
 
+    private void doCircularReveal() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            backdrop.post(() -> {
+                int centerX = backdrop.getMeasuredWidth() / 2;
+                int centerY = backdrop.getMeasuredHeight() / 2;
+                int endRadius = (int) Math
+                        .hypot(backdrop.getWidth(), backdrop.getHeight());
+                Animator animator = ViewAnimationUtils.createCircularReveal(backdrop, centerX, centerY, 0, endRadius);
+                animator.setDuration(800);
+                backdrop.setVisibility(View.VISIBLE);
+                animator.start();
+            });
+        }
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -81,7 +99,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
 
     @Override
     public void showErrorLoadingCast() {
-        
+
     }
 
     @Override
