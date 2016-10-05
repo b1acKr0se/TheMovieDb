@@ -48,7 +48,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         presenter.attachView(this);
         Media media = getIntent().getParcelableExtra("media");
         GlideUtil.load(this, UrlBuilder.getPosterUrl(media.getPosterPath()), poster);
-        doCircularReveal(UrlBuilder.getBackdropUrl(media.getBackdropPath()));
+        GlideUtil.load(this, UrlBuilder.getBackdropUrl(media.getBackdropPath()), backdrop);
+        doCircularReveal();
         if (media.getBackgroundColor() != 0)
             container.setBackgroundColor(media.getBackgroundColor());
         title.setText(media.getTitle());
@@ -68,8 +69,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         castFragment.show(fm, "fragment_cast");
     }
 
-    private void doCircularReveal(String path) {
-        GlideUtil.load(this, path, backdrop);
+    private void doCircularReveal() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             backdrop.post(() -> {
                 int centerX = backdrop.getMeasuredWidth() / 2;

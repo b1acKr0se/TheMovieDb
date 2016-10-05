@@ -30,14 +30,9 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     MovieListPresenter presenter = new MovieListPresenter();
     private MovieListAdapter adapter;
     private List<Media> movies = new ArrayList<>();
-    private Callback callback;
 
     public ListFragment() {
         // Required empty public constructor
-    }
-
-    public void setCallback(Callback callback) {
-        this.callback = callback;
     }
 
     @Override
@@ -94,8 +89,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onMovieClicked(Media media, View view) {
-        callback.onSceneTransitionStarted();
-        new Handler().postDelayed(() -> startAnimatedTransitionIntent(getActivity(), view, media), 200);
+        startAnimatedTransitionIntent(getActivity(), view, media);
     }
 
     private static void startAnimatedTransitionIntent(Activity context, View view, Media media) {
@@ -104,9 +98,5 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         View coverStartView = view.findViewById(R.id.poster);
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(context, coverStartView, "poster");
         ActivityCompat.startActivity(context, intent, options.toBundle());
-    }
-
-    interface Callback {
-        void onSceneTransitionStarted();
     }
 }
