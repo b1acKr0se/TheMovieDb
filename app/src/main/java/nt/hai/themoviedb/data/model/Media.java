@@ -44,12 +44,20 @@ public class Media implements Parcelable {
     @SerializedName("vote_count")
     @Expose
     private Integer voteCount;
-
     @SerializedName("media_type")
     @Expose
     private String mediaType;
+    private String name;
+    @SerializedName("profile_path")
+    @Expose
+    private String profilePath;
+
 
     private int backgroundColor;
+
+    public Media() {
+        
+    }
 
     /**
      *
@@ -281,6 +289,22 @@ public class Media implements Parcelable {
 
     public void setMediaType(String mediaType) {
         this.mediaType = mediaType;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getProfilePath() {
+        return profilePath;
+    }
+
+    public void setProfilePath(String profilePath) {
+        this.profilePath = profilePath;
     }
 
     @Override

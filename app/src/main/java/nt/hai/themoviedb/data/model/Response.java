@@ -22,6 +22,9 @@ public class Response {
     @Expose
     private Integer totalResults;
 
+    private List<Media> searchMovies = new ArrayList<>();
+    private List<Media> searchCast = new ArrayList<>();
+
     /**
      *
      * @return
@@ -94,4 +97,19 @@ public class Response {
         this.totalResults = totalResults;
     }
 
+    public List<Media> getSearchMovies() {
+        return searchMovies;
+    }
+
+    public void setSearchMovies(List<Media> searchMovies) {
+        this.searchMovies = searchMovies;
+    }
+
+    public List<Media> getSearchCast() {
+        return searchCast;
+    }
+
+    public void setSearchCast(List<Media> searchCast) {
+        this.searchCast = searchCast;
+    }
 }

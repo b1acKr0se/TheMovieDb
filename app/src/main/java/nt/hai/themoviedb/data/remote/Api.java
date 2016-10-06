@@ -22,4 +22,7 @@ public interface Api {
 
     @GET("movie/{movie_id}/videos")
     Observable<DetailResponse> getVideos(@Query("api_key") String apiKey);
+
+    @GET("search/multi")
+    Observable<Response> search(@Query("api_key") String apiKey, @Query("query") String query);
 }
