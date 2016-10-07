@@ -9,5 +9,6 @@
     <color name="materialDarkText">#B3000000</color>
     <color name="blackTransparent">#8C000000</color>
     <color name="gray600">#808080</color>
+    <color name="gray50">#FAFAFA</color>
 
 </resources>

@@ -18,6 +18,7 @@ import nt.hai.themoviedb.R;
 
 public class ResettableEditText extends EditText implements View.OnTouchListener, View.OnFocusChangeListener {
     private Drawable drawable;
+    private ClearListener listener;
 
     public ResettableEditText(Context context) {
         super(context);
@@ -32,6 +33,14 @@ public class ResettableEditText extends EditText implements View.OnTouchListener
     public ResettableEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
+    }
+
+    public void setListener(ClearListener clearListener) {
+        listener = clearListener;
+    }
+
+    public interface ClearListener {
+        void onTextCleared();
     }
 
     @Override
@@ -54,6 +63,7 @@ public class ResettableEditText extends EditText implements View.OnTouchListener
             if (tappedX) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     setText("");
+                    if (listener != null) listener.onTextCleared();
                 }
                 return true;
             }

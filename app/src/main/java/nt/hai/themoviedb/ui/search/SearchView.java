@@ -1,6 +1,7 @@
 package nt.hai.themoviedb.ui.search;
 
-import nt.hai.themoviedb.data.model.Response;
+import java.util.List;
+
 import nt.hai.themoviedb.ui.base.BaseView;
 
 
@@ -8,5 +9,9 @@ public interface SearchView extends BaseView {
 
     void showProgress(boolean show);
 
-    void showResult(Response response);
+    void showResult(List<Object> list);
+
+    void showEmpty();
+
+    void showError();
 }

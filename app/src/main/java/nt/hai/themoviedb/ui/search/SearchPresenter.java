@@ -1,10 +1,12 @@
 package nt.hai.themoviedb.ui.search;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import nt.hai.themoviedb.BuildConfig;
 import nt.hai.themoviedb.data.model.Media;
 import nt.hai.themoviedb.data.model.Response;
+import nt.hai.themoviedb.data.model.Section;
 import nt.hai.themoviedb.data.remote.RetrofitClient;
 import nt.hai.themoviedb.ui.base.Presenter;
 import rx.Observable;
@@ -26,15 +28,25 @@ class SearchPresenter extends Presenter<SearchView> {
                         extractSearchResult(medias, "person"),
                         extractSearchResult(medias, "movie"),
                         (people, movies) -> {
-                            Response res = new Response();
-                            res.setSearchCast(people);
-                            res.setSearchMovies(movies);
-                            return res;
+                            List<Object> list = new ArrayList<>();
+                            if (!movies.isEmpty()) {
+                                Section movieSection = new Section();
+                                movieSection.name = "Movies";
+                                list.add(movieSection);
+                                list.addAll(movies);
+                            }
+                            if (!people.isEmpty()) {
+                                Section peopleSection = new Section();
+                                peopleSection.name = "People";
+                                list.add(peopleSection);
+                                list.addAll(people);
+                            }
+                            return list;
                         }))
                 .flatMap(Observable::just)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Response>() {
+                .subscribe(new Subscriber<List<Object>>() {
                     @Override
                     public void onCompleted() {
 
@@ -43,12 +55,15 @@ class SearchPresenter extends Presenter<SearchView> {
                     @Override
                     public void onError(Throwable e) {
                         getView().showProgress(false);
+                        getView().showError();
                     }
 
                     @Override
-                    public void onNext(Response response) {
+                    public void onNext(List<Object> list) {
                         getView().showProgress(false);
-                        getView().showResult(response);
+                        if (!list.isEmpty())
+                            getView().showResult(list);
+                        else getView().showEmpty();
                     }
 
                     @Override

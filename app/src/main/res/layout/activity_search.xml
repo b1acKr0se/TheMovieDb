@@ -6,6 +6,7 @@
     android:id="@+id/activity_search"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/gray50"
     tools:context="nt.hai.themoviedb.ui.search.SearchActivity">
 
     <LinearLayout
@@ -17,18 +18,20 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:background="@color/gray100"
+            android:elevation="4dp"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
             <nt.hai.themoviedb.ui.widget.ResettableEditText
                 android:id="@+id/search_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="top"
-                android:inputType="text"
-                android:scrollHorizontally="true"
-                android:drawablePadding="8dp"
                 android:background="@android:color/transparent"
-                android:hint="Search term"/>
+                android:drawablePadding="8dp"
+                android:gravity="top"
+                android:hint="Search term"
+                android:inputType="text"
+                android:scrollHorizontally="true"/>
 
         </android.support.v7.widget.Toolbar>
 
@@ -36,15 +39,22 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="4dp"
-            android:clipToPadding="false"/>
+            android:clipToPadding="false"
+            android:paddingBottom="8dp"/>
     </LinearLayout>
 
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:visibility="invisible"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/indication"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="20sp"/>
 
 </FrameLayout>
