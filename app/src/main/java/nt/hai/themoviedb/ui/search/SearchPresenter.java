@@ -1,8 +1,9 @@
 package nt.hai.themoviedb.ui.search;
 
-import android.util.Log;
+import java.util.List;
 
 import nt.hai.themoviedb.BuildConfig;
+import nt.hai.themoviedb.data.model.Media;
 import nt.hai.themoviedb.data.model.Response;
 import nt.hai.themoviedb.data.remote.RetrofitClient;
 import nt.hai.themoviedb.ui.base.Presenter;
@@ -15,9 +16,6 @@ import rx.schedulers.Schedulers;
 class SearchPresenter extends Presenter<SearchView> {
     private Subscription subscription;
 
-    SearchPresenter() {
-    }
-
     void search(String query) {
         if (subscription != null) subscription.unsubscribe();
         subscription = searchObservable(query)
@@ -25,11 +23,9 @@ class SearchPresenter extends Presenter<SearchView> {
                 .filter(media -> media != null && !media.getMediaType().equals("tv"))
                 .toList()
                 .flatMap(medias -> Observable.zip(
-                        Observable.from(medias)
-                                .filter(media -> media.getMediaType().equals("person"))
-                                .toList(),
-                        Observable.from(medias).filter(media -> media.getMediaType().equals("movie"))
-                                .toList(), (people, movies) -> {
+                        extractSearchResult(medias, "person"),
+                        extractSearchResult(medias, "movie"),
+                        (people, movies) -> {
                             Response res = new Response();
                             res.setSearchCast(people);
                             res.setSearchMovies(movies);
@@ -46,13 +42,26 @@ class SearchPresenter extends Presenter<SearchView> {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        getView().showProgress(false);
                     }
 
                     @Override
                     public void onNext(Response response) {
+                        getView().showProgress(false);
+                        getView().showResult(response);
+                    }
+
+                    @Override
+                    public void onStart() {
+                        getView().showProgress(true);
                     }
                 });
+    }
+
+    private Observable<List<Media>> extractSearchResult(List<Media> list, String type) {
+        return Observable.from(list)
+                .filter(media -> media.getMediaType().equals(type))
+                .toList();
     }
 
     private Observable<Response> searchObservable(String query) {
