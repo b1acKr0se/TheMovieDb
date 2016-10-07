@@ -1,11 +1,18 @@
 package nt.hai.themoviedb.ui.detail;
 
 import android.animation.Animator;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Fade;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.widget.ImageView;
@@ -36,22 +43,34 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     @BindView(R.id.layout_info) View container;
     @BindView(R.id.cast_recycler_view) RecyclerView castRecyclerView;
     @BindView(R.id.cast_progress_bar) ProgressBar progressBar;
+    @BindView(R.id.app_bar_layout)AppBarLayout appBarLayout;
     private DetailPresenter presenter = new DetailPresenter();
     private CastAdapter adapter;
     private List<DetailResponse.Cast> casts = new ArrayList<>();
 
+    public static void navigate(Activity context, View view, Media media) {
+        Intent intent = new Intent(context, DetailActivity.class);
+        intent.putExtra("media", media);
+        View coverStartView = view.findViewById(R.id.poster);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(context, coverStartView, "poster");
+        ActivityCompat.startActivity(context, intent, options.toBundle());
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setActivityTransition();
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
         presenter.attachView(this);
         Media media = getIntent().getParcelableExtra("media");
+        if (media.getBackgroundColor() != 0) {
+            container.setBackgroundColor(media.getBackgroundColor());
+            appBarLayout.setBackgroundColor(media.getBackgroundColor());
+        }
         GlideUtil.load(this, UrlBuilder.getPosterUrl(media.getPosterPath()), poster);
         GlideUtil.load(this, UrlBuilder.getBackdropUrl(media.getBackdropPath()), backdrop);
         doCircularReveal();
-        if (media.getBackgroundColor() != 0)
-            container.setBackgroundColor(media.getBackgroundColor());
         title.setText(media.getTitle());
         releaseDate.setText(DateUtil.format(media.getReleaseDate()));
         overview.setText(media.getOverview());
@@ -84,6 +103,15 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         }
     }
 
+    private void setActivityTransition() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Fade transition = new Fade();
+            transition.excludeTarget(android.R.id.statusBarBackground, true);
+            transition.excludeTarget(android.R.id.navigationBarBackground, true);
+            getWindow().setEnterTransition(transition);
+            getWindow().setReturnTransition(transition);
+        }
+    }
 
     @Override
     protected void onDestroy() {

@@ -89,14 +89,6 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onMovieClicked(Media media, View view) {
-        startAnimatedTransitionIntent(getActivity(), view, media);
-    }
-
-    private static void startAnimatedTransitionIntent(Activity context, View view, Media media) {
-        Intent intent = new Intent(context, DetailActivity.class);
-        intent.putExtra("media", media);
-        View coverStartView = view.findViewById(R.id.poster);
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(context, coverStartView, "poster");
-        ActivityCompat.startActivity(context, intent, options.toBundle());
+        DetailActivity.navigate(getActivity(), view, media);
     }
 }
