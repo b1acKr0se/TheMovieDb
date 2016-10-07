@@ -17,6 +17,7 @@
             android:layout_width="30dp"
             android:layout_height="53dp"
             android:background="@color/colorPrimary"
+            android:transitionName="poster"
             android:scaleType="centerCrop"/>
 
         <TextView

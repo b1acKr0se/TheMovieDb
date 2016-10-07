@@ -24,6 +24,7 @@ import nt.hai.themoviedb.R;
 import nt.hai.themoviedb.data.model.Media;
 import nt.hai.themoviedb.data.model.Response;
 import nt.hai.themoviedb.ui.base.BaseActivity;
+import nt.hai.themoviedb.ui.detail.DetailActivity;
 import nt.hai.themoviedb.ui.widget.ResettableEditText;
 import rx.Observable;
 import rx.Subscription;
@@ -124,7 +125,7 @@ public class SearchActivity extends BaseActivity implements SearchView, Resettab
 
     @Override
     public void onMovieClicked(View view, Media movie) {
-        Toast.makeText(getApplicationContext(), movie.getTitle(), Toast.LENGTH_SHORT).show();
+        DetailActivity.navigate(this, view, movie);
     }
 
     @Override

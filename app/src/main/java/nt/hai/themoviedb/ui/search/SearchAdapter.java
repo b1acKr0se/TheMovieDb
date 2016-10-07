@@ -3,6 +3,7 @@ package nt.hai.themoviedb.ui.search;
 import android.graphics.Bitmap;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
 
 import java.util.List;
@@ -21,7 +27,6 @@ import butterknife.ButterKnife;
 import nt.hai.themoviedb.R;
 import nt.hai.themoviedb.data.model.Media;
 import nt.hai.themoviedb.data.model.Section;
-import nt.hai.themoviedb.util.GlideUtil;
 import nt.hai.themoviedb.util.UrlBuilder;
 
 
@@ -67,8 +72,28 @@ class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             SearchMovieViewHolder viewHolder = (SearchMovieViewHolder) holder;
             viewHolder.divider.setVisibility(position == list.size() - 1 ? View.VISIBLE : View.GONE);
             viewHolder.title.setText(movie.getTitle());
-            GlideUtil.load(viewHolder.itemView.getContext(), UrlBuilder.getPosterUrl(movie.getPosterPath()), viewHolder.poster);
-            if(listener != null)
+            Glide.with(viewHolder.itemView.getContext())
+                    .load(UrlBuilder.getPosterUrl(movie.getPosterPath()))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .dontAnimate()
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            Bitmap bitmap = ((GlideBitmapDrawable) resource.getCurrent()).getBitmap();
+                            Palette palette = new Palette.Builder(bitmap).generate();
+                            int defaultColor = 0xFF333333;
+                            int color = palette.getDarkMutedColor(defaultColor);
+                            movie.setBackgroundColor(color);
+                            return false;
+                        }
+                    })
+                    .into(viewHolder.poster);
+            if (listener != null)
                 RxView.clicks(viewHolder.itemView).subscribe(aVoid -> listener.onMovieClicked(viewHolder.itemView, movie));
         } else if (holder instanceof SearchCastViewHolder) {
             Media person = (Media) object;
@@ -87,7 +112,7 @@ class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             viewHolder.image.setImageDrawable(circularBitmapDrawable);
                         }
                     });
-            if(listener != null)
+            if (listener != null)
                 RxView.clicks(viewHolder.itemView).subscribe(aVoid -> listener.onPersonClicked(viewHolder.itemView, person));
         }
     }
@@ -140,7 +165,7 @@ class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    public interface OnMediaClickListener {
+    interface OnMediaClickListener {
         void onMovieClicked(View view, Media movie);
 
         void onPersonClicked(View view, Media person);

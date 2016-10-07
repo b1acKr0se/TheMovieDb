@@ -1,9 +1,13 @@
 package nt.hai.themoviedb.ui.detail;
 
 import android.animation.Animator;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,6 +47,14 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     private DetailPresenter presenter = new DetailPresenter();
     private CastAdapter adapter;
     private List<DetailResponse.Cast> casts = new ArrayList<>();
+
+    public static void navigate(Activity context, View view, Media media) {
+        Intent intent = new Intent(context, DetailActivity.class);
+        intent.putExtra("media", media);
+        View coverStartView = view.findViewById(R.id.poster);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(context, coverStartView, "poster");
+        ActivityCompat.startActivity(context, intent, options.toBundle());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
