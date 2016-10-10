@@ -74,7 +74,8 @@ class SearchPresenter extends Presenter<SearchView> {
     }
 
     private Observable<List<Media>> extractSearchResult(List<Media> list, String type) {
-        return Observable.from(list)
+        return Observable
+                .from(list)
                 .filter(media -> media.getMediaType().equals(type))
                 .toList();
     }

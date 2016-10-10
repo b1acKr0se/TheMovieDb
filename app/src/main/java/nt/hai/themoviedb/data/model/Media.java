@@ -6,6 +6,9 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Media implements Parcelable {
 
     @SerializedName("adult")
@@ -51,12 +54,15 @@ public class Media implements Parcelable {
     @SerializedName("profile_path")
     @Expose
     private String profilePath;
+    @SerializedName("genre_ids")
+    @Expose
+    private List<Integer> genreIds = new ArrayList<Integer>();
 
 
     private int backgroundColor;
 
     public Media() {
-        
+
     }
 
     /**
@@ -307,6 +313,14 @@ public class Media implements Parcelable {
         this.profilePath = profilePath;
     }
 
+    public List<Integer> getGenreIds() {
+        return genreIds;
+    }
+
+    public void setGenreIds(List<Integer> genreIds) {
+        this.genreIds = genreIds;
+    }
+
     @Override
     public String toString() {
         return "Media{" +
@@ -340,6 +354,15 @@ public class Media implements Parcelable {
         video = videoVal == 0x02 ? null : videoVal != 0x00;
         voteAverage = in.readByte() == 0x00 ? null : in.readFloat();
         voteCount = in.readByte() == 0x00 ? null : in.readInt();
+        mediaType = in.readString();
+        name = in.readString();
+        profilePath = in.readString();
+        if (in.readByte() == 0x01) {
+            genreIds = new ArrayList<Integer>();
+            in.readList(genreIds, Integer.class.getClassLoader());
+        } else {
+            genreIds = null;
+        }
         backgroundColor = in.readInt();
     }
 
@@ -389,6 +412,15 @@ public class Media implements Parcelable {
         } else {
             dest.writeByte((byte) (0x01));
             dest.writeInt(voteCount);
+        }
+        dest.writeString(mediaType);
+        dest.writeString(name);
+        dest.writeString(profilePath);
+        if (genreIds == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(genreIds);
         }
         dest.writeInt(backgroundColor);
     }
