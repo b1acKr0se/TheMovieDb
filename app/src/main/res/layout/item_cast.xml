@@ -12,6 +12,4 @@
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
         android:scaleType="centerCrop"/>
-
-
 </LinearLayout>

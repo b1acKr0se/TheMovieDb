@@ -1,16 +1,25 @@
 package nt.hai.themoviedb.ui.detail;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.List;
 
 import nt.hai.themoviedb.BuildConfig;
 import nt.hai.themoviedb.data.model.DetailResponse;
+import nt.hai.themoviedb.data.model.GenreManager;
 import nt.hai.themoviedb.data.remote.RetrofitClient;
 import nt.hai.themoviedb.ui.base.Presenter;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func2;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -55,7 +64,7 @@ class DetailPresenter extends Presenter<DetailView> {
 
                             @Override
                             public void onNext(List<DetailResponse.Cast> list) {
-                                if(!list.isEmpty()) {
+                                if (!list.isEmpty()) {
                                     getView().showLoadingCast(false);
                                     getView().showCast(list);
                                 } else {
@@ -96,6 +105,36 @@ class DetailPresenter extends Presenter<DetailView> {
 
                             }
                         }));
+    }
+
+    void loadGenres(List<Integer> genreIds) {
+        if (genreIds.isEmpty()) return;
+        subscription.add(getGenreList()
+                .doOnError(throwable -> getView().showEmptyGenre())
+                .filter(genres -> genres != null)
+                .flatMap(genreManager -> Observable.just(genreManager.getGenreList(genreIds)))
+                .subscribe(list -> {
+                    if (list.isEmpty()) getView().showEmptyGenre();
+                    else getView().showGenre(list);
+                }));
+    }
+
+    private Observable<GenreManager> getGenreList() {
+        String json;
+        try {
+            InputStream is = getView().getAssets().open("genres.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return Observable.empty();
+        }
+        Type type = new TypeToken<GenreManager>() {
+        }.getType();
+        return Observable.just(new Gson().fromJson(json, type));
     }
 
     private Observable<DetailResponse> getCastListJsonObservable() {

@@ -3,6 +3,7 @@ package nt.hai.themoviedb.ui.detail;
 import android.animation.Animator;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -27,6 +28,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import nt.hai.themoviedb.R;
 import nt.hai.themoviedb.data.model.DetailResponse;
+import nt.hai.themoviedb.data.model.GenreManager;
 import nt.hai.themoviedb.data.model.Media;
 import nt.hai.themoviedb.ui.castlist.CastFragment;
 import nt.hai.themoviedb.util.DateUtil;
@@ -43,11 +45,14 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     @BindView(R.id.layout_info) View container;
     @BindView(R.id.cast_recycler_view) RecyclerView castRecyclerView;
     @BindView(R.id.cast_progress_bar) ProgressBar progressBar;
+    @BindView(R.id.genre_recycler_view) RecyclerView genreRecyclerView;
     @BindView(R.id.app_bar_layout) AppBarLayout appBarLayout;
     @BindView(R.id.cast_not_found) TextView empty;
     private DetailPresenter presenter = new DetailPresenter();
-    private CastAdapter adapter;
+    private CastAdapter castAdapter;
+    private GenreAdapter genreAdapter;
     private List<DetailResponse.Cast> casts = new ArrayList<>();
+    private List<GenreManager.Genre> genres = new ArrayList<>();
 
     public static void navigate(Activity context, View view, Media media) {
         Intent intent = new Intent(context, DetailActivity.class);
@@ -76,11 +81,18 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         releaseDate.setText(DateUtil.format(media.getReleaseDate()));
         overview.setText(media.getOverview());
         rating.setText(media.getVoteAverage() + " from " + media.getVoteCount() + " votes");
-        adapter = new CastAdapter(casts, CastAdapter.TYPE_SUMMARY);
+
+        castAdapter = new CastAdapter(casts, CastAdapter.TYPE_SUMMARY);
         castRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        castRecyclerView.setAdapter(adapter);
+        castRecyclerView.setAdapter(castAdapter);
+
+        genreAdapter = new GenreAdapter(genres);
+        genreRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        genreRecyclerView.setAdapter(genreAdapter);
+
         presenter.setMovieId(media.getId());
         presenter.loadCast();
+        presenter.loadGenres(media.getGenreIds());
     }
 
     private void showCastDialog() {
@@ -129,11 +141,27 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     }
 
     @Override
+    public AssetManager getAssets() {
+        return super.getAssets();
+    }
+
+    @Override
     public void showCast(List<DetailResponse.Cast> list) {
         castRecyclerView.setVisibility(View.VISIBLE);
         casts.clear();
         casts.addAll(list);
-        adapter.notifyDataSetChanged();
+        castAdapter.notifyDataSetChanged();
+    }
+
+    @Override public void showGenre(List<GenreManager.Genre> list) {
+        genreRecyclerView.setVisibility(View.VISIBLE);
+        genres.clear();
+        genres.addAll(list);
+        genreAdapter.notifyDataSetChanged();
+    }
+
+    @Override public void showEmptyGenre() {
+
     }
 
     @Override
@@ -143,7 +171,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         showLoadingCast(false);
     }
 
-    @OnClick(R.id.cast_container)
+    @OnClick(R.id.view_all_cast)
     void onCastContainerClicked() {
         if (!casts.isEmpty())
             showCastDialog();
