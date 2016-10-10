@@ -19,6 +19,7 @@ import android.view.ViewAnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -161,7 +162,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     }
 
     @Override public void showEmptyGenre() {
-
     }
 
     @Override

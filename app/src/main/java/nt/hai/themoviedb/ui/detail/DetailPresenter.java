@@ -110,31 +110,39 @@ class DetailPresenter extends Presenter<DetailView> {
     void loadGenres(List<Integer> genreIds) {
         if (genreIds.isEmpty()) return;
         subscription.add(getGenreList()
-                .doOnError(throwable -> getView().showEmptyGenre())
                 .filter(genres -> genres != null)
-                .flatMap(genreManager -> Observable.just(genreManager.getGenreList(genreIds)))
-                .subscribe(list -> {
-                    if (list.isEmpty()) getView().showEmptyGenre();
-                    else getView().showGenre(list);
+                .map(genreManager -> genreManager.getGenreList(genreIds))
+                .subscribe(new Subscriber<List<GenreManager.Genre>>() {
+                    @Override public void onCompleted() {
+                    }
+
+                    @Override public void onError(Throwable e) {
+                        e.printStackTrace();
+                        getView().showEmptyGenre();
+                    }
+
+                    @Override public void onNext(List<GenreManager.Genre> list) {
+                        getView().showGenre(list);
+                    }
                 }));
     }
 
     private Observable<GenreManager> getGenreList() {
-        String json;
-        try {
-            InputStream is = getView().getAssets().open("genres.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return Observable.empty();
-        }
-        Type type = new TypeToken<GenreManager>() {
-        }.getType();
-        return Observable.just(new Gson().fromJson(json, type));
+        return Observable.create(subscriber -> {
+            try {
+                InputStream is = getView().getAssets().open("genres.json");
+                int size = is.available();
+                byte[] buffer = new byte[size];
+                is.read(buffer);
+                is.close();
+                String json = new String(buffer, "UTF-8");
+                Type type = new TypeToken<GenreManager>() {}.getType();
+                subscriber.onNext(new Gson().fromJson(json, type));
+                subscriber.onCompleted();
+            } catch (IOException e) {
+                subscriber.onError(e);
+            }
+        });
     }
 
     private Observable<DetailResponse> getCastListJsonObservable() {
