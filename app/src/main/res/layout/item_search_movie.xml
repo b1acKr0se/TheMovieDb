@@ -14,8 +14,8 @@
 
         <ImageView
             android:id="@+id/poster"
-            android:layout_width="30dp"
-            android:layout_height="53dp"
+            android:layout_width="40dp"
+            android:layout_height="60dp"
             android:background="@color/colorPrimary"
             android:transitionName="poster"
             android:scaleType="centerCrop"/>

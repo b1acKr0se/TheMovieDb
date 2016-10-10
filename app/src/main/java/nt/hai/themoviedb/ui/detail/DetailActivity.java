@@ -43,7 +43,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     @BindView(R.id.layout_info) View container;
     @BindView(R.id.cast_recycler_view) RecyclerView castRecyclerView;
     @BindView(R.id.cast_progress_bar) ProgressBar progressBar;
-    @BindView(R.id.app_bar_layout)AppBarLayout appBarLayout;
+    @BindView(R.id.app_bar_layout) AppBarLayout appBarLayout;
+    @BindView(R.id.cast_not_found) TextView empty;
     private DetailPresenter presenter = new DetailPresenter();
     private CastAdapter adapter;
     private List<DetailResponse.Cast> casts = new ArrayList<>();
@@ -106,8 +107,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     private void setActivityTransition() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Fade transition = new Fade();
-            transition.excludeTarget(android.R.id.statusBarBackground, true);
-            transition.excludeTarget(android.R.id.navigationBarBackground, true);
             getWindow().setEnterTransition(transition);
             getWindow().setReturnTransition(transition);
         }
@@ -121,8 +120,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
 
     @Override
     public void showLoadingCast(boolean show) {
-        if (show) progressBar.setVisibility(View.VISIBLE);
-        else progressBar.setVisibility(View.GONE);
+        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -138,8 +136,16 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void showEmpty() {
+        castRecyclerView.setVisibility(View.GONE);
+        empty.setVisibility(View.VISIBLE);
+        showLoadingCast(false);
+    }
+
     @OnClick(R.id.cast_container)
     void onCastContainerClicked() {
-        showCastDialog();
+        if (!casts.isEmpty())
+            showCastDialog();
     }
 }

@@ -49,14 +49,18 @@ class DetailPresenter extends Presenter<DetailView> {
 
                             @Override
                             public void onError(Throwable e) {
-                                getView().showLoadingCast(false);
+                                getView().showEmpty();
                                 e.printStackTrace();
                             }
 
                             @Override
                             public void onNext(List<DetailResponse.Cast> list) {
-                                getView().showLoadingCast(false);
-                                getView().showCast(list);
+                                if(!list.isEmpty()) {
+                                    getView().showLoadingCast(false);
+                                    getView().showCast(list);
+                                } else {
+                                    getView().showEmpty();
+                                }
                             }
                         })
         );

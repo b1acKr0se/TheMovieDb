@@ -14,4 +14,5 @@ interface DetailView extends BaseView {
 
     void showCast(List<DetailResponse.Cast> list);
 
+    void showEmpty();
 }
