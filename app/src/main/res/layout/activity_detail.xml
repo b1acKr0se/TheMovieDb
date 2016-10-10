@@ -25,14 +25,23 @@
                 android:scaleType="centerCrop"
                 android:visibility="invisible"/>
 
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                app:layout_collapseMode="none"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
         </android.support.design.widget.CollapsingToolbarLayout>
 
         <FrameLayout
             android:id="@+id/layout_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="4dp"
-            android:background="@color/colorPrimary">
+            android:background="@color/colorPrimary"
+            android:elevation="4dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -146,6 +155,7 @@
                     android:id="@+id/view_all_cast"
                     style="?android:attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
+                    android:minHeight="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|end"
                     android:text="VIEW ALL"

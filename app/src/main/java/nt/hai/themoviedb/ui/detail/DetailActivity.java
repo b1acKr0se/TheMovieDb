@@ -7,19 +7,21 @@ import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.transition.Fade;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +33,15 @@ import nt.hai.themoviedb.R;
 import nt.hai.themoviedb.data.model.DetailResponse;
 import nt.hai.themoviedb.data.model.GenreManager;
 import nt.hai.themoviedb.data.model.Media;
+import nt.hai.themoviedb.ui.base.BaseActivity;
 import nt.hai.themoviedb.ui.castlist.CastFragment;
 import nt.hai.themoviedb.util.DateUtil;
 import nt.hai.themoviedb.util.GlideUtil;
 import nt.hai.themoviedb.util.UrlBuilder;
 
-public class DetailActivity extends AppCompatActivity implements DetailView {
+public class DetailActivity extends BaseActivity implements DetailView {
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
     @BindView(R.id.poster) ImageView poster;
     @BindView(R.id.backdrop) ImageView backdrop;
     @BindView(R.id.title) TextView title;
@@ -70,6 +75,11 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
         presenter.attachView(this);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(this, android.R.color.transparent));
+        collapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, android.R.color.transparent));
+
         Media media = getIntent().getParcelableExtra("media");
         if (media.getBackgroundColor() != 0) {
             container.setBackgroundColor(media.getBackgroundColor());
@@ -129,6 +139,11 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     protected void onDestroy() {
         super.onDestroy();
         presenter.detachView();
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home) onBackPressed();
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
