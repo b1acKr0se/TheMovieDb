@@ -1,7 +1,5 @@
 package nt.hai.themoviedb.ui.detail;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -18,8 +16,6 @@ import nt.hai.themoviedb.ui.base.Presenter;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -65,7 +61,6 @@ class DetailPresenter extends Presenter<DetailView> {
                             @Override
                             public void onNext(List<DetailResponse.Cast> list) {
                                 if (!list.isEmpty()) {
-                                    getView().showLoadingCast(false);
                                     getView().showCast(list);
                                 } else {
                                     getView().showEmpty();
@@ -86,9 +81,6 @@ class DetailPresenter extends Presenter<DetailView> {
                         })
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .doOnNext(detailResponse -> {
-                            getView().showLoadingCast(false);
-                        })
                         .subscribe(new Subscriber<DetailResponse>() {
                             @Override
                             public void onCompleted() {
