@@ -40,13 +40,13 @@ public class MovieListPresenter extends Presenter<MovieListView> {
     void loadMovies() {
         subscription.add(
                 Observable.concat(getCacheObservable(), getMovieObservable())
-                        .first(movies -> movies != null)
+                        .filter(list -> list != null && list.size() > 0)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<List<Media>>() {
                             @Override
                             public void onCompleted() {
-
+                                getView().showProgress(false);
                             }
 
                             @Override
@@ -57,7 +57,6 @@ public class MovieListPresenter extends Presenter<MovieListView> {
 
                             @Override
                             public void onNext(List<Media> movies) {
-                                getView().showProgress(false);
                                 getView().showMovies(movies);
                             }
                         })
