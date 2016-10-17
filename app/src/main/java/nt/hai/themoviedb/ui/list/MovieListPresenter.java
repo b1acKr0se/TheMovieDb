@@ -1,9 +1,8 @@
 package nt.hai.themoviedb.ui.list;
 
-import android.util.Log;
-
-import java.io.IOException;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import nt.hai.themoviedb.BuildConfig;
 import nt.hai.themoviedb.data.model.Media;
@@ -19,9 +18,12 @@ import rx.subscriptions.CompositeSubscription;
 
 public class MovieListPresenter extends Presenter<MovieListView> {
     private final CompositeSubscription subscription;
+    private ResponseCache cache;
 
-    public MovieListPresenter() {
+    @Inject
+    public MovieListPresenter(ResponseCache responseCache) {
         subscription = new CompositeSubscription();
+        cache = responseCache;
     }
 
     @Override
@@ -67,25 +69,14 @@ public class MovieListPresenter extends Presenter<MovieListView> {
                 .getNowPlayingMovies(BuildConfig.API_KEY)
                 .flatMap(response -> Observable.just(response.getResults()))
                 .doOnNext(list -> {
-                    try {
-                        new ResponseCache().insert("movies", list);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    cache.insert("movies", list);
                 }));
     }
 
     private Observable<List<Media>> getCacheObservable() {
-        Log.i("getCacheObservable", "------------>: ");
         return Observable.defer(() -> {
-            try {
-                List<Media> list = new ResponseCache().get("movies");
-                Log.i("getCacheObservable", "------------>: " + list.size());
-                return Observable.just(list);
-            } catch (IOException e) {
-                Log.i("getCacheObservable", "------------>: null");
-                return Observable.just(null);
-            }
+            List<Media> list = cache.get("movies");
+            return Observable.just(list);
         });
     }
 }

@@ -26,6 +26,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -52,7 +54,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
     @BindView(R.id.cast_recycler_view) RecyclerView castRecyclerView;
     @BindView(R.id.genre_recycler_view) RecyclerView genreRecyclerView;
     @BindView(R.id.app_bar_layout) AppBarLayout appBarLayout;
-    private DetailPresenter presenter = new DetailPresenter();
+    @Inject DetailPresenter presenter;
     private CastAdapter castAdapter;
     private GenreAdapter genreAdapter;
     private List<DetailResponse.Cast> casts = new ArrayList<>();
@@ -72,6 +74,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
         setActivityTransition();
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
+        activityComponent().inject(this);
         presenter.attachView(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

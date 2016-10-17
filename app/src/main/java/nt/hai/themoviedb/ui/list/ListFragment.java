@@ -12,24 +12,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nt.hai.themoviedb.R;
 import nt.hai.themoviedb.data.model.Media;
+import nt.hai.themoviedb.ui.base.BaseActivity;
 import nt.hai.themoviedb.ui.detail.DetailActivity;
 import nt.hai.themoviedb.util.cache.ResponseCache;
 
 public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, MovieListView, MovieListAdapter.OnMovieClickListener {
     @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
-    MovieListPresenter presenter = new MovieListPresenter();
+    @Inject ResponseCache responseCache;
+    @Inject MovieListPresenter presenter;
     private MovieListAdapter adapter;
     private List<Media> movies = new ArrayList<>();
-    private ResponseCache responseCache;
+
 
     public ListFragment() {
         // Required empty public constructor
@@ -40,11 +43,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         ButterKnife.bind(this, view);
-        try {
-            responseCache = new ResponseCache(getActivity());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ((BaseActivity) getActivity()).activityComponent().inject(this);
         presenter.attachView(this);
         adapter = new MovieListAdapter(movies);
         adapter.setOnMovieClickListener(this);

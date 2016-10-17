@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nt.hai.themoviedb.R;
@@ -33,7 +35,7 @@ public class SearchActivity extends BaseActivity implements SearchView, Resettab
     @BindView(R.id.progress_bar) ProgressBar progressBar;
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
     @BindView(R.id.indication) TextView indicator;
-    private SearchPresenter presenter = new SearchPresenter();
+    @Inject SearchPresenter presenter;
     private Subscription subscription;
     private SearchAdapter adapter;
     private List<Object> list = new ArrayList<>();
@@ -42,6 +44,7 @@ public class SearchActivity extends BaseActivity implements SearchView, Resettab
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        activityComponent().inject(this);
         presenter.attachView(this);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);

@@ -43,6 +43,7 @@ public class ResponseCache {
     public List<Media> get(String key) {
         try {
             DiskLruCache.Snapshot snapshot = diskLruCache.get(key);
+            if(snapshot == null) return null;
             ObjectInputStream in = new ObjectInputStream(snapshot.getInputStream(0));
             return (List<Media>) in.readObject();
         } catch (ClassNotFoundException | IOException e) {

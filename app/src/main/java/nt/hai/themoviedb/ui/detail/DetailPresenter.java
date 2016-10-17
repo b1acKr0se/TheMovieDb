@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import nt.hai.themoviedb.BuildConfig;
 import nt.hai.themoviedb.data.model.DetailResponse;
 import nt.hai.themoviedb.data.model.GenreManager;
@@ -24,6 +26,7 @@ class DetailPresenter extends Presenter<DetailView> {
     private CompositeSubscription subscription;
     private int movieId;
 
+    @Inject
     DetailPresenter() {
         subscription = new CompositeSubscription();
     }
