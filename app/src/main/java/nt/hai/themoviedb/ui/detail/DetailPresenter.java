@@ -1,5 +1,7 @@
 package nt.hai.themoviedb.ui.detail;
 
+import android.content.res.AssetManager;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -24,11 +26,13 @@ import rx.subscriptions.CompositeSubscription;
 
 class DetailPresenter extends Presenter<DetailView> {
     private CompositeSubscription subscription;
+    private AssetManager assetManager;
     private int movieId;
 
     @Inject
-    DetailPresenter() {
+    DetailPresenter(AssetManager am) {
         subscription = new CompositeSubscription();
+        assetManager = am;
     }
 
     void setMovieId(int id) {
@@ -123,7 +127,7 @@ class DetailPresenter extends Presenter<DetailView> {
 
     private Observable<GenreManager> getGenreObservable() {
         try {
-            InputStream is = getView().getAssets().open("genres.json");
+            InputStream is = assetManager.open("genres.json");
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);

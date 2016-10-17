@@ -28,7 +28,6 @@ import nt.hai.themoviedb.util.cache.ResponseCache;
 public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, MovieListView, MovieListAdapter.OnMovieClickListener {
     @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
-    @Inject ResponseCache responseCache;
     @Inject MovieListPresenter presenter;
     private MovieListAdapter adapter;
     private List<Media> movies = new ArrayList<>();
@@ -59,7 +58,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onRefresh() {
-        presenter.loadMovies();
+        presenter.loadMovies(false);
     }
 
     @Override
@@ -67,7 +66,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         if (show) {
             swipeRefreshLayout.post(() -> {
                 swipeRefreshLayout.setRefreshing(true);
-                onRefresh();
+                presenter.loadMovies(true);
             });
         } else
             swipeRefreshLayout.setRefreshing(false);
@@ -97,7 +96,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             DetailActivity.navigate(getActivity(), view, media);
         else {
             Intent intent = new Intent(getActivity(), DetailActivity.class);
-            intent.putExtra("media", (Parcelable) media);
+            intent.putExtra("media", media);
             startActivity(intent);
         }
     }

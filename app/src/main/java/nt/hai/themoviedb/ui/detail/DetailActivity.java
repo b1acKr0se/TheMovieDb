@@ -3,7 +3,6 @@ package nt.hai.themoviedb.ui.detail;
 import android.animation.Animator;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -54,7 +53,9 @@ public class DetailActivity extends BaseActivity implements DetailView {
     @BindView(R.id.cast_recycler_view) RecyclerView castRecyclerView;
     @BindView(R.id.genre_recycler_view) RecyclerView genreRecyclerView;
     @BindView(R.id.app_bar_layout) AppBarLayout appBarLayout;
+
     @Inject DetailPresenter presenter;
+
     private CastAdapter castAdapter;
     private GenreAdapter genreAdapter;
     private List<DetailResponse.Cast> casts = new ArrayList<>();
@@ -62,8 +63,12 @@ public class DetailActivity extends BaseActivity implements DetailView {
 
     public static void navigate(Activity context, View view, Media media) {
         Intent intent = new Intent(context, DetailActivity.class);
-        intent.putExtra("media", (Parcelable) media);
-        View coverStartView = view.findViewById(R.id.poster);
+        intent.putExtra("media", media);
+        ImageView coverStartView = (ImageView) view.findViewById(R.id.poster);
+        if(coverStartView.getDrawable() == null) {
+            context.startActivity(intent);
+            return;
+        }
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(context, coverStartView, "poster");
         ActivityCompat.startActivity(context, intent, options.toBundle());
     }
@@ -143,13 +148,8 @@ public class DetailActivity extends BaseActivity implements DetailView {
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home) onBackPressed();
+        if (item.getItemId() == android.R.id.home) onBackPressed();
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public AssetManager getAssets() {
-        return super.getAssets();
     }
 
     @Override
