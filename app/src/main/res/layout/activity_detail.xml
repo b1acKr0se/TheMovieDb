@@ -120,90 +120,88 @@
                 android:textColor="@color/materialDarkText"
                 android:textSize="16dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:paddingLeft="8dp"
-                android:text="Genres"/>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/genre_recycler_view"
+            <LinearLayout
+                android:id="@+id/genre_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:overScrollMode="never"
-                android:paddingBottom="8dp"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                android:paddingTop="8dp"
-                android:visibility="gone"/>
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:visibility="gone"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:paddingLeft="8dp"
-                    android:text="Cast"/>
+                    android:text="Genres"/>
 
-                <Button
-                    android:id="@+id/view_all_cast"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:minHeight="0dp"
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/genre_recycler_view"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|end"
-                    android:text="VIEW ALL"
-                    android:textColor="@color/colorAccent"/>
-            </FrameLayout>
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:paddingTop="8dp"/>
+            </LinearLayout>
 
-            <android.support.v7.widget.CardView
+
+            <LinearLayout
+                android:id="@+id/cast_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="1dp"
-                android:layout_marginTop="1dp"
-                app:cardCornerRadius="0dp">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/cast_recycler_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clipToPadding="false"
-                        android:overScrollMode="never"
-                        android:paddingBottom="8dp"
-                        android:paddingLeft="4dp"
-                        android:paddingRight="4dp"
-                        android:paddingTop="8dp"
-                        android:visibility="gone"/>
-
-                    <ProgressBar
-                        android:id="@+id/cast_progress_bar"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_margin="8dp"/>
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/cast_not_found"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="8dp"
-                        android:text="No data"
-                        android:textSize="18sp"
-                        android:visibility="gone"/>
-                </FrameLayout>
-            </android.support.v7.widget.CardView>
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="8dp"
+                        android:text="Cast"/>
 
+                    <Button
+                        android:id="@+id/view_all_cast"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:minHeight="0dp"
+                        android:text="VIEW ALL"
+                        android:textColor="@color/colorAccent"/>
+                </FrameLayout>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginTop="1dp"
+                    app:cardCornerRadius="0dp">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/cast_recycler_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clipToPadding="false"
+                            android:overScrollMode="never"
+                            android:paddingBottom="8dp"
+                            android:paddingLeft="4dp"
+                            android:paddingRight="4dp"
+                            android:paddingTop="8dp"/>
+
+                    </FrameLayout>
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
 
         </LinearLayout>
 

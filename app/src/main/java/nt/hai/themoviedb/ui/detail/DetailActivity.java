@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
@@ -20,11 +21,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,11 +52,9 @@ public class DetailActivity extends BaseActivity implements DetailView {
     @BindView(R.id.rating) TextView rating;
     @BindView(R.id.layout_info) View container;
     @BindView(R.id.cast_recycler_view) RecyclerView castRecyclerView;
-    @BindView(R.id.cast_progress_bar) ProgressBar progressBar;
     @BindView(R.id.genre_recycler_view) RecyclerView genreRecyclerView;
     @BindView(R.id.app_bar_layout) AppBarLayout appBarLayout;
-    @BindView(R.id.cast_not_found) TextView empty;
-    private DetailPresenter presenter = new DetailPresenter();
+    @Inject DetailPresenter presenter;
     private CastAdapter castAdapter;
     private GenreAdapter genreAdapter;
     private List<DetailResponse.Cast> casts = new ArrayList<>();
@@ -62,7 +62,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
 
     public static void navigate(Activity context, View view, Media media) {
         Intent intent = new Intent(context, DetailActivity.class);
-        intent.putExtra("media", media);
+        intent.putExtra("media", (Parcelable) media);
         View coverStartView = view.findViewById(R.id.poster);
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(context, coverStartView, "poster");
         ActivityCompat.startActivity(context, intent, options.toBundle());
@@ -74,6 +74,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
         setActivityTransition();
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
+        activityComponent().inject(this);
         presenter.attachView(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -147,43 +148,32 @@ public class DetailActivity extends BaseActivity implements DetailView {
     }
 
     @Override
-    public void showLoadingCast(boolean show) {
-        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void showErrorLoadingCast() {
-
-    }
-
-    @Override
     public AssetManager getAssets() {
         return super.getAssets();
     }
 
     @Override
     public void showCast(List<DetailResponse.Cast> list) {
-        castRecyclerView.setVisibility(View.VISIBLE);
+        findViewById(R.id.cast_container).setVisibility(View.VISIBLE);
         casts.clear();
         casts.addAll(list);
         castAdapter.notifyDataSetChanged();
     }
 
     @Override public void showGenre(List<GenreManager.Genre> list) {
-        genreRecyclerView.setVisibility(View.VISIBLE);
+        findViewById(R.id.genre_container).setVisibility(View.VISIBLE);
         genres.clear();
         genres.addAll(list);
         genreAdapter.notifyDataSetChanged();
     }
 
     @Override public void showEmptyGenre() {
+        findViewById(R.id.genre_container).setVisibility(View.GONE);
     }
 
     @Override
     public void showEmpty() {
-        castRecyclerView.setVisibility(View.GONE);
-        empty.setVisibility(View.VISIBLE);
-        showLoadingCast(false);
+        findViewById(R.id.cast_container).setVisibility(View.GONE);
     }
 
     @OnClick(R.id.view_all_cast)

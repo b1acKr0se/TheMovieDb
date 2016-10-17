@@ -4,10 +4,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,18 +16,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nt.hai.themoviedb.R;
 import nt.hai.themoviedb.data.model.Media;
-import nt.hai.themoviedb.data.model.Response;
 import nt.hai.themoviedb.ui.base.BaseActivity;
 import nt.hai.themoviedb.ui.detail.DetailActivity;
 import nt.hai.themoviedb.ui.widget.ResettableEditText;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 public class SearchActivity extends BaseActivity implements SearchView, ResettableEditText.ClearListener, SearchAdapter.OnMediaClickListener {
     @BindView(R.id.search_edit_text) ResettableEditText editText;
@@ -37,7 +35,7 @@ public class SearchActivity extends BaseActivity implements SearchView, Resettab
     @BindView(R.id.progress_bar) ProgressBar progressBar;
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
     @BindView(R.id.indication) TextView indicator;
-    private SearchPresenter presenter = new SearchPresenter();
+    @Inject SearchPresenter presenter;
     private Subscription subscription;
     private SearchAdapter adapter;
     private List<Object> list = new ArrayList<>();
@@ -46,6 +44,7 @@ public class SearchActivity extends BaseActivity implements SearchView, Resettab
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        activityComponent().inject(this);
         presenter.attachView(this);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
@@ -57,7 +56,7 @@ public class SearchActivity extends BaseActivity implements SearchView, Resettab
 
     private void setupListener() {
         subscription = RxTextView.textChanges(editText)
-                .debounce(1000, TimeUnit.MILLISECONDS)
+                .debounce(1, TimeUnit.SECONDS)
                 .switchMap(Observable::just)
                 .filter(s -> s != null && s.length() >= 2)
                 .observeOn(AndroidSchedulers.mainThread())

@@ -1,7 +1,5 @@
 package nt.hai.themoviedb.ui.detail;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -9,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import nt.hai.themoviedb.BuildConfig;
 import nt.hai.themoviedb.data.model.DetailResponse;
@@ -18,8 +18,6 @@ import nt.hai.themoviedb.ui.base.Presenter;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -28,6 +26,7 @@ class DetailPresenter extends Presenter<DetailView> {
     private CompositeSubscription subscription;
     private int movieId;
 
+    @Inject
     DetailPresenter() {
         subscription = new CompositeSubscription();
     }
@@ -45,11 +44,11 @@ class DetailPresenter extends Presenter<DetailView> {
     void loadCast() {
         subscription.add(
                 getCastListJsonObservable()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
                         .flatMap(castResponse -> Observable.from(castResponse.getCast()))
                         .filter(cast -> cast.getProfilePath() != null)
                         .toList()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<List<DetailResponse.Cast>>() {
                             @Override
                             public void onCompleted() {
@@ -65,7 +64,6 @@ class DetailPresenter extends Presenter<DetailView> {
                             @Override
                             public void onNext(List<DetailResponse.Cast> list) {
                                 if (!list.isEmpty()) {
-                                    getView().showLoadingCast(false);
                                     getView().showCast(list);
                                 } else {
                                     getView().showEmpty();
@@ -86,9 +84,6 @@ class DetailPresenter extends Presenter<DetailView> {
                         })
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .doOnNext(detailResponse -> {
-                            getView().showLoadingCast(false);
-                        })
                         .subscribe(new Subscriber<DetailResponse>() {
                             @Override
                             public void onCompleted() {
@@ -109,8 +104,7 @@ class DetailPresenter extends Presenter<DetailView> {
 
     void loadGenres(List<Integer> genreIds) {
         if (genreIds.isEmpty()) return;
-        subscription.add(getGenreList()
-                .filter(genres -> genres != null)
+        subscription.add(getGenreObservable()
                 .map(genreManager -> genreManager.getGenreList(genreIds))
                 .subscribe(new Subscriber<List<GenreManager.Genre>>() {
                     @Override public void onCompleted() {
@@ -127,22 +121,19 @@ class DetailPresenter extends Presenter<DetailView> {
                 }));
     }
 
-    private Observable<GenreManager> getGenreList() {
-        return Observable.create(subscriber -> {
-            try {
-                InputStream is = getView().getAssets().open("genres.json");
-                int size = is.available();
-                byte[] buffer = new byte[size];
-                is.read(buffer);
-                is.close();
-                String json = new String(buffer, "UTF-8");
-                Type type = new TypeToken<GenreManager>() {}.getType();
-                subscriber.onNext(new Gson().fromJson(json, type));
-                subscriber.onCompleted();
-            } catch (IOException e) {
-                subscriber.onError(e);
-            }
-        });
+    private Observable<GenreManager> getGenreObservable() {
+        try {
+            InputStream is = getView().getAssets().open("genres.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            String json = new String(buffer, "UTF-8");
+            Type type = new TypeToken<GenreManager>() {}.getType();
+            return Observable.just(new Gson().fromJson(json, type));
+        } catch (IOException e) {
+            return Observable.error(e);
+        }
     }
 
     private Observable<DetailResponse> getCastListJsonObservable() {

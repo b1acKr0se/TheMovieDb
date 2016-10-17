@@ -2,10 +2,13 @@ package nt.hai.themoviedb.ui.list;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import nt.hai.themoviedb.BuildConfig;
 import nt.hai.themoviedb.data.model.Media;
 import nt.hai.themoviedb.data.remote.RetrofitClient;
 import nt.hai.themoviedb.ui.base.Presenter;
+import nt.hai.themoviedb.util.cache.ResponseCache;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -15,9 +18,12 @@ import rx.subscriptions.CompositeSubscription;
 
 public class MovieListPresenter extends Presenter<MovieListView> {
     private final CompositeSubscription subscription;
+    private ResponseCache cache;
 
-    public MovieListPresenter() {
+    @Inject
+    public MovieListPresenter(ResponseCache responseCache) {
         subscription = new CompositeSubscription();
+        cache = responseCache;
     }
 
     @Override
@@ -33,33 +39,43 @@ public class MovieListPresenter extends Presenter<MovieListView> {
 
     void loadMovies() {
         subscription.add(
-                getMovieObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<List<Media>>() {
-                    @Override
-                    public void onCompleted() {
+                Observable.concat(getCacheObservable(), getMovieObservable())
+                        .filter(list -> list != null && list.size() > 0)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<List<Media>>() {
+                            @Override
+                            public void onCompleted() {
+                                getView().showProgress(false);
+                            }
 
-                    }
+                            @Override
+                            public void onError(Throwable e) {
+                                getView().showProgress(false);
+                                getView().showError();
+                            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().showProgress(false);
-                        getView().showError();
-                    }
-
-                    @Override
-                    public void onNext(List<Media> movies) {
-                        getView().showProgress(false);
-                        getView().showMovies(movies);
-                    }
-                })
+                            @Override
+                            public void onNext(List<Media> movies) {
+                                getView().showMovies(movies);
+                            }
+                        })
         );
     }
 
     private Observable<List<Media>> getMovieObservable() {
-        return RetrofitClient.getClient()
+        return Observable.defer(() -> RetrofitClient.getClient()
                 .getNowPlayingMovies(BuildConfig.API_KEY)
-                .flatMap(response -> Observable.just(response.getResults()));
+                .flatMap(response -> Observable.just(response.getResults()))
+                .doOnNext(list -> {
+                    cache.insert("movies", list);
+                }));
+    }
+
+    private Observable<List<Media>> getCacheObservable() {
+        return Observable.defer(() -> {
+            List<Media> list = cache.get("movies");
+            return Observable.just(list);
+        });
     }
 }

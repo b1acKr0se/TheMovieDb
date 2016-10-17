@@ -1,12 +1,9 @@
 package nt.hai.themoviedb.ui.list;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -18,18 +15,24 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nt.hai.themoviedb.R;
 import nt.hai.themoviedb.data.model.Media;
+import nt.hai.themoviedb.ui.base.BaseActivity;
 import nt.hai.themoviedb.ui.detail.DetailActivity;
+import nt.hai.themoviedb.util.cache.ResponseCache;
 
 public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, MovieListView, MovieListAdapter.OnMovieClickListener {
     @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
-    MovieListPresenter presenter = new MovieListPresenter();
+    @Inject ResponseCache responseCache;
+    @Inject MovieListPresenter presenter;
     private MovieListAdapter adapter;
     private List<Media> movies = new ArrayList<>();
+
 
     public ListFragment() {
         // Required empty public constructor
@@ -40,6 +43,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         ButterKnife.bind(this, view);
+        ((BaseActivity) getActivity()).activityComponent().inject(this);
         presenter.attachView(this);
         adapter = new MovieListAdapter(movies);
         adapter.setOnMovieClickListener(this);
@@ -89,6 +93,12 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onMovieClicked(Media media, View view) {
-        DetailActivity.navigate(getActivity(), view, media);
+        if (media.getPosterPath() != null)
+            DetailActivity.navigate(getActivity(), view, media);
+        else {
+            Intent intent = new Intent(getActivity(), DetailActivity.class);
+            intent.putExtra("media", (Parcelable) media);
+            startActivity(intent);
+        }
     }
 }

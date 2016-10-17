@@ -11,10 +11,6 @@ import nt.hai.themoviedb.ui.base.BaseView;
 
 interface DetailView extends BaseView {
 
-    void showLoadingCast(boolean show);
-
-    void showErrorLoadingCast();
-
     void showCast(List<DetailResponse.Cast> list);
 
     void showGenre(List<GenreManager.Genre> list);

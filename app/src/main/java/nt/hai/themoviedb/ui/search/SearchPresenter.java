@@ -3,6 +3,8 @@ package nt.hai.themoviedb.ui.search;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import nt.hai.themoviedb.BuildConfig;
 import nt.hai.themoviedb.data.model.Media;
 import nt.hai.themoviedb.data.model.Response;
@@ -17,6 +19,11 @@ import rx.schedulers.Schedulers;
 
 class SearchPresenter extends Presenter<SearchView> {
     private Subscription subscription;
+
+    @Inject
+    SearchPresenter() {
+
+    }
 
     void search(String query) {
         if (subscription != null) subscription.unsubscribe();
@@ -43,7 +50,6 @@ class SearchPresenter extends Presenter<SearchView> {
                             }
                             return list;
                         }))
-                .flatMap(Observable::just)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Subscriber<List<Object>>() {
