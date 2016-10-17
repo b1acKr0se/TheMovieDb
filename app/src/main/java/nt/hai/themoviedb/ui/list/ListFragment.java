@@ -1,12 +1,9 @@
 package nt.hai.themoviedb.ui.list;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +21,7 @@ import butterknife.ButterKnife;
 import nt.hai.themoviedb.R;
 import nt.hai.themoviedb.data.model.Media;
 import nt.hai.themoviedb.ui.detail.DetailActivity;
+import nt.hai.themoviedb.util.cache.ResponseCache;
 
 public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, MovieListView, MovieListAdapter.OnMovieClickListener {
     @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
@@ -30,6 +29,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     MovieListPresenter presenter = new MovieListPresenter();
     private MovieListAdapter adapter;
     private List<Media> movies = new ArrayList<>();
+    private ResponseCache responseCache;
 
     public ListFragment() {
         // Required empty public constructor
@@ -40,6 +40,11 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         ButterKnife.bind(this, view);
+        try {
+            responseCache = new ResponseCache(getActivity());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         presenter.attachView(this);
         adapter = new MovieListAdapter(movies);
         adapter.setOnMovieClickListener(this);
@@ -93,7 +98,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             DetailActivity.navigate(getActivity(), view, media);
         else {
             Intent intent = new Intent(getActivity(), DetailActivity.class);
-            intent.putExtra("media", media);
+            intent.putExtra("media", (Parcelable) media);
             startActivity(intent);
         }
     }

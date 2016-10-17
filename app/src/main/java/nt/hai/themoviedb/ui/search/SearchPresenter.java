@@ -43,7 +43,6 @@ class SearchPresenter extends Presenter<SearchView> {
                             }
                             return list;
                         }))
-                .flatMap(Observable::just)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Subscriber<List<Object>>() {

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
@@ -59,7 +60,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
 
     public static void navigate(Activity context, View view, Media media) {
         Intent intent = new Intent(context, DetailActivity.class);
-        intent.putExtra("media", media);
+        intent.putExtra("media", (Parcelable) media);
         View coverStartView = view.findViewById(R.id.poster);
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(context, coverStartView, "poster");
         ActivityCompat.startActivity(context, intent, options.toBundle());

@@ -4,10 +4,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,14 +20,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import nt.hai.themoviedb.R;
 import nt.hai.themoviedb.data.model.Media;
-import nt.hai.themoviedb.data.model.Response;
 import nt.hai.themoviedb.ui.base.BaseActivity;
 import nt.hai.themoviedb.ui.detail.DetailActivity;
 import nt.hai.themoviedb.ui.widget.ResettableEditText;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 public class SearchActivity extends BaseActivity implements SearchView, ResettableEditText.ClearListener, SearchAdapter.OnMediaClickListener {
     @BindView(R.id.search_edit_text) ResettableEditText editText;
@@ -57,7 +53,7 @@ public class SearchActivity extends BaseActivity implements SearchView, Resettab
 
     private void setupListener() {
         subscription = RxTextView.textChanges(editText)
-                .debounce(1000, TimeUnit.MILLISECONDS)
+                .debounce(1, TimeUnit.SECONDS)
                 .switchMap(Observable::just)
                 .filter(s -> s != null && s.length() >= 2)
                 .observeOn(AndroidSchedulers.mainThread())
