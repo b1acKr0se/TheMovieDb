@@ -37,30 +37,29 @@ public class MovieListPresenter extends Presenter<MovieListView> {
         subscription.unsubscribe();
     }
 
-    void loadMovies() {
-        subscription.add(
-                Observable.concat(getCacheObservable(), getMovieObservable())
-                        .filter(list -> list != null && list.size() > 0)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<List<Media>>() {
-                            @Override
-                            public void onCompleted() {
-                                getView().showProgress(false);
-                            }
+    void loadMovies(boolean allowCache) {
+        Subscriber<List<Media>> subscriber = new Subscriber<List<Media>>() {
+            @Override
+            public void onCompleted() {
+                getView().showProgress(false);
+            }
 
-                            @Override
-                            public void onError(Throwable e) {
-                                getView().showProgress(false);
-                                getView().showError();
-                            }
+            @Override
+            public void onError(Throwable e) {
+                getView().showProgress(false);
+                getView().showError();
+            }
 
-                            @Override
-                            public void onNext(List<Media> movies) {
-                                getView().showMovies(movies);
-                            }
-                        })
-        );
+            @Override
+            public void onNext(List<Media> movies) {
+                getView().showMovies(movies);
+            }
+        };
+        subscription.add((allowCache ? Observable.concat(getCacheObservable(), getMovieObservable()) : getMovieObservable())
+                .filter(list -> list != null && list.size() > 0)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber));
     }
 
     private Observable<List<Media>> getMovieObservable() {

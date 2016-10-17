@@ -58,7 +58,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onRefresh() {
-        presenter.loadMovies();
+        presenter.loadMovies(false);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         if (show) {
             swipeRefreshLayout.post(() -> {
                 swipeRefreshLayout.setRefreshing(true);
-                onRefresh();
+                presenter.loadMovies(true);
             });
         } else
             swipeRefreshLayout.setRefreshing(false);
