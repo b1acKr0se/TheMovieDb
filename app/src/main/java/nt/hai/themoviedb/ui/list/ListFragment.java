@@ -96,7 +96,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             DetailActivity.navigate(getActivity(), view, media);
         else {
             Intent intent = new Intent(getActivity(), DetailActivity.class);
-            intent.putExtra("media", (Parcelable) media);
+            intent.putExtra("media", media);
             startActivity(intent);
         }
     }

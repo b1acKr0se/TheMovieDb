@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Media implements Parcelable, Serializable {
+public class Media implements Parcelable {
 
     @SerializedName("adult")
     @Expose
