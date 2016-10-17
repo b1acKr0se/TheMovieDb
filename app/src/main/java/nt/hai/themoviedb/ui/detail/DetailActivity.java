@@ -3,7 +3,6 @@ package nt.hai.themoviedb.ui.detail;
 import android.animation.Animator;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -143,13 +142,8 @@ public class DetailActivity extends BaseActivity implements DetailView {
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home) onBackPressed();
+        if (item.getItemId() == android.R.id.home) onBackPressed();
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public AssetManager getAssets() {
-        return super.getAssets();
     }
 
     @Override

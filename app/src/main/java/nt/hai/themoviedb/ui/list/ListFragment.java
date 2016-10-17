@@ -28,7 +28,6 @@ import nt.hai.themoviedb.util.cache.ResponseCache;
 public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, MovieListView, MovieListAdapter.OnMovieClickListener {
     @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
-    @Inject ResponseCache responseCache;
     @Inject MovieListPresenter presenter;
     private MovieListAdapter adapter;
     private List<Media> movies = new ArrayList<>();

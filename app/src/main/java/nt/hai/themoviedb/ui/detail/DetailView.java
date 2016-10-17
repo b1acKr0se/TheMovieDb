@@ -18,6 +18,4 @@ interface DetailView extends BaseView {
     void showEmptyGenre();
 
     void showEmpty();
-
-    AssetManager getAssets();
 }
