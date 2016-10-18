@@ -3,7 +3,6 @@ package nt.hai.themoviedb.ui.list;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -23,7 +22,6 @@ import nt.hai.themoviedb.R;
 import nt.hai.themoviedb.data.model.Media;
 import nt.hai.themoviedb.ui.base.BaseActivity;
 import nt.hai.themoviedb.ui.detail.DetailActivity;
-import nt.hai.themoviedb.util.cache.ResponseCache;
 
 public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, MovieListView, MovieListAdapter.OnMovieClickListener {
     @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
@@ -42,7 +40,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         ButterKnife.bind(this, view);
-        ((BaseActivity) getActivity()).activityComponent().inject(this);
+        ((BaseActivity) getActivity()).getActivityComponent().inject(this);
         presenter.attachView(this);
         adapter = new MovieListAdapter(movies);
         adapter.setOnMovieClickListener(this);

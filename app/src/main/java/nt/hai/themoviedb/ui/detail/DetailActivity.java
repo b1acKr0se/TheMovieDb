@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
@@ -79,7 +78,7 @@ public class DetailActivity extends BaseActivity implements DetailView {
         setActivityTransition();
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
-        activityComponent().inject(this);
+        getActivityComponent().inject(this);
         presenter.attachView(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

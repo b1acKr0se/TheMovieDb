@@ -11,6 +11,8 @@ import nt.hai.themoviedb.ui.search.SearchActivity;
 @Component(dependencies = AppComponent.class, modules = ActivityModule.class)
 public interface ActivityComponent {
     void inject(ListFragment fragment);
+
     void inject(DetailActivity detailActivity);
+
     void inject(SearchActivity searchActivity);
 }
