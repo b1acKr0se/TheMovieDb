@@ -3,4 +3,5 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="clear_button_padding_right">16dp</dimen>
+    <dimen name="padding_left_cast_recycler_view">72dp</dimen>
 </resources>
