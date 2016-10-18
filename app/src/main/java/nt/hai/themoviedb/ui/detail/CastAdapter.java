@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,23 +49,21 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
     @Override
     public void onBindViewHolder(CastViewHolder holder, int position) {
         DetailResponse.Cast cast = casts.get(position);
+        Glide.with(holder.itemView.getContext()).load(UrlBuilder.getCastUrl(cast.getProfilePath()))
+                .asBitmap()
+                .centerCrop()
+                .into(new BitmapImageViewTarget(holder.image) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(holder.itemView.getContext().getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        holder.image.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
         if (type == TYPE_FULL) {
-            GlideUtil.load(holder.itemView.getContext(), UrlBuilder.getCastUrl(cast.getProfilePath()), holder.image);
             holder.name.setText(cast.getName());
-            holder.character.setText(cast.getCharacter());
-        } else {
-            Glide.with(holder.itemView.getContext()).load(UrlBuilder.getCastUrl(cast.getProfilePath()))
-                    .asBitmap()
-                    .centerCrop()
-                    .into(new BitmapImageViewTarget(holder.image) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            RoundedBitmapDrawable circularBitmapDrawable =
-                                    RoundedBitmapDrawableFactory.create(holder.itemView.getContext().getResources(), resource);
-                            circularBitmapDrawable.setCircular(true);
-                            holder.image.setImageDrawable(circularBitmapDrawable);
-                        }
-                    });
+            holder.character.setText(TextUtils.isEmpty(cast.getCharacter()) ? "Unknown character" : cast.getCharacter());
         }
 
     }

@@ -79,7 +79,7 @@ public class DetailResponse {
         this.videos = videos;
     }
 
-    public class Cast implements Parcelable {
+    public static class Cast implements Parcelable {
 
         @SerializedName("cast_id")
         @Expose
@@ -244,7 +244,7 @@ public class DetailResponse {
         }
 
         @SuppressWarnings("unused")
-        public final Parcelable.Creator<DetailResponse.Cast> CREATOR = new Parcelable.Creator<DetailResponse.Cast>() {
+        public static final Parcelable.Creator<DetailResponse.Cast> CREATOR = new Parcelable.Creator<DetailResponse.Cast>() {
             @Override
             public Cast createFromParcel(Parcel in) {
                 return new DetailResponse.Cast(in);

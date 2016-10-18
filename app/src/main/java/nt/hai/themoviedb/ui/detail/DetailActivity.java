@@ -34,6 +34,7 @@ import nt.hai.themoviedb.data.model.DetailResponse;
 import nt.hai.themoviedb.data.model.GenreManager;
 import nt.hai.themoviedb.data.model.Media;
 import nt.hai.themoviedb.ui.base.BaseActivity;
+import nt.hai.themoviedb.ui.castlist.CastActivity;
 import nt.hai.themoviedb.ui.castlist.CastFragment;
 import nt.hai.themoviedb.util.DateUtil;
 import nt.hai.themoviedb.util.GlideUtil;
@@ -177,7 +178,11 @@ public class DetailActivity extends BaseActivity implements DetailView {
 
     @OnClick(R.id.view_all_cast)
     void onCastContainerClicked() {
-        if (!casts.isEmpty())
-            showCastDialog();
+        if (!casts.isEmpty()) {
+            Intent intent = new Intent(this, CastActivity.class);
+            intent.putParcelableArrayListExtra("cast", (ArrayList<DetailResponse.Cast>) casts);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_up, R.anim.no_change);
+        }
     }
 }
