@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import java.util.List;
@@ -17,8 +18,6 @@ import butterknife.ButterKnife;
 import nt.hai.themoviedb.R;
 import nt.hai.themoviedb.data.model.DetailResponse;
 import nt.hai.themoviedb.ui.detail.CastAdapter;
-
-import static java.security.AccessController.getContext;
 
 public class CastActivity extends AppCompatActivity {
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -57,13 +56,17 @@ public class CastActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_white_24px);
 
-        list = getIntent().getParcelableArrayListExtra("cast");
         initPadding();
+        list = getIntent().getParcelableArrayListExtra("cast");
         recyclerView.addOnScrollListener(toolbarElevation);
         CastAdapter adapter = new CastAdapter(list, CastAdapter.TYPE_FULL);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
+        if(savedInstanceState != null) {
+            recyclerView.post(() -> layoutManager.scrollToPositionWithOffset(0, 0));
+        }
     }
 
     private void initPadding() {
