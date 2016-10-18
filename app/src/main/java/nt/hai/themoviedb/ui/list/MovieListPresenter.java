@@ -6,7 +6,7 @@ import javax.inject.Inject;
 
 import nt.hai.themoviedb.BuildConfig;
 import nt.hai.themoviedb.data.model.Media;
-import nt.hai.themoviedb.data.remote.RetrofitClient;
+import nt.hai.themoviedb.data.remote.Api;
 import nt.hai.themoviedb.ui.base.Presenter;
 import nt.hai.themoviedb.util.cache.ResponseCache;
 import rx.Observable;
@@ -19,11 +19,13 @@ import rx.subscriptions.CompositeSubscription;
 public class MovieListPresenter extends Presenter<MovieListView> {
     private final CompositeSubscription subscription;
     private ResponseCache cache;
+    private Api client;
 
     @Inject
-    public MovieListPresenter(ResponseCache responseCache) {
+    public MovieListPresenter(ResponseCache responseCache, Api api) {
         subscription = new CompositeSubscription();
         cache = responseCache;
+        client = api;
     }
 
     @Override
@@ -63,7 +65,7 @@ public class MovieListPresenter extends Presenter<MovieListView> {
     }
 
     private Observable<List<Media>> getMovieObservable() {
-        return Observable.defer(() -> RetrofitClient.getClient()
+        return Observable.defer(() -> client
                 .getNowPlayingMovies(BuildConfig.API_KEY)
                 .flatMap(response -> Observable.just(response.getResults()))
                 .doOnNext(list -> {

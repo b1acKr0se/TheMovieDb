@@ -9,7 +9,7 @@ import nt.hai.themoviedb.BuildConfig;
 import nt.hai.themoviedb.data.model.Media;
 import nt.hai.themoviedb.data.model.Response;
 import nt.hai.themoviedb.data.model.Section;
-import nt.hai.themoviedb.data.remote.RetrofitClient;
+import nt.hai.themoviedb.data.remote.Api;
 import nt.hai.themoviedb.ui.base.Presenter;
 import rx.Observable;
 import rx.Subscriber;
@@ -19,10 +19,11 @@ import rx.schedulers.Schedulers;
 
 class SearchPresenter extends Presenter<SearchView> {
     private Subscription subscription;
+    private Api client;
 
     @Inject
-    SearchPresenter() {
-
+    SearchPresenter(Api api) {
+        client = api;
     }
 
     void search(String query) {
@@ -87,6 +88,6 @@ class SearchPresenter extends Presenter<SearchView> {
     }
 
     private Observable<Response> searchObservable(String query) {
-        return RetrofitClient.getClient().search(BuildConfig.API_KEY, query);
+        return client.search(BuildConfig.API_KEY, query);
     }
 }

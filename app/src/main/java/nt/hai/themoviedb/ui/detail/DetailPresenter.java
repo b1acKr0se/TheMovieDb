@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import nt.hai.themoviedb.BuildConfig;
 import nt.hai.themoviedb.data.model.DetailResponse;
 import nt.hai.themoviedb.data.model.GenreManager;
-import nt.hai.themoviedb.data.remote.RetrofitClient;
+import nt.hai.themoviedb.data.remote.Api;
 import nt.hai.themoviedb.ui.base.Presenter;
 import rx.Observable;
 import rx.Subscriber;
@@ -27,12 +27,14 @@ import rx.subscriptions.CompositeSubscription;
 class DetailPresenter extends Presenter<DetailView> {
     private CompositeSubscription subscription;
     private AssetManager assetManager;
+    private Api client;
     private int movieId;
 
     @Inject
-    DetailPresenter(AssetManager am) {
+    public DetailPresenter(AssetManager am, Api api) {
         subscription = new CompositeSubscription();
         assetManager = am;
+        client = api;
     }
 
     void setMovieId(int id) {
@@ -133,7 +135,8 @@ class DetailPresenter extends Presenter<DetailView> {
             is.read(buffer);
             is.close();
             String json = new String(buffer, "UTF-8");
-            Type type = new TypeToken<GenreManager>() {}.getType();
+            Type type = new TypeToken<GenreManager>() {
+            }.getType();
             return Observable.just(new Gson().fromJson(json, type));
         } catch (IOException e) {
             return Observable.error(e);
@@ -141,17 +144,16 @@ class DetailPresenter extends Presenter<DetailView> {
     }
 
     private Observable<DetailResponse> getCastListJsonObservable() {
-        return RetrofitClient.getClient()
-                .getCastList(movieId, BuildConfig.API_KEY);
+        return client.getCastList(movieId, BuildConfig.API_KEY);
     }
 
     private Observable<List<DetailResponse.Image>> getImages() {
-        return RetrofitClient.getClient().getImages(BuildConfig.API_KEY)
+        return client.getImages(BuildConfig.API_KEY)
                 .flatMap(detailResponse -> Observable.just(detailResponse.getBackdrops(), detailResponse.getPosters()));
     }
 
     private Observable<List<DetailResponse.Video>> getVideos() {
-        return RetrofitClient.getClient().getVideos(BuildConfig.API_KEY)
+        return client.getVideos(BuildConfig.API_KEY)
                 .flatMap(detailResponse -> Observable.just(detailResponse.getVideos()));
     }
 }

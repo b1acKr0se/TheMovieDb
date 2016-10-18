@@ -44,7 +44,7 @@ public class SearchActivity extends BaseActivity implements SearchView, Resettab
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        activityComponent().inject(this);
+        getActivityComponent().inject(this);
         presenter.attachView(this);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
