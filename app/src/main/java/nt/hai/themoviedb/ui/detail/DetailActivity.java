@@ -112,12 +112,6 @@ public class DetailActivity extends BaseActivity implements DetailView {
         presenter.loadGenres(media.getGenreIds());
     }
 
-    private void showCastDialog() {
-        FragmentManager fm = getSupportFragmentManager();
-        CastFragment castFragment = CastFragment.newInstance(casts);
-        castFragment.show(fm, "fragment_cast");
-    }
-
     private void doCircularReveal() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             backdrop.post(() -> {

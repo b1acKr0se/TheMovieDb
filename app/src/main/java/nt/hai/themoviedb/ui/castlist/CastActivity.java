@@ -1,6 +1,7 @@
 package nt.hai.themoviedb.ui.castlist;
 
 import android.annotation.TargetApi;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,8 @@ import nt.hai.themoviedb.R;
 import nt.hai.themoviedb.data.model.DetailResponse;
 import nt.hai.themoviedb.ui.detail.CastAdapter;
 
+import static java.security.AccessController.getContext;
+
 public class CastActivity extends AppCompatActivity {
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
@@ -24,6 +27,7 @@ public class CastActivity extends AppCompatActivity {
     private List<DetailResponse.Cast> list;
     private LinearLayoutManager layoutManager;
 
+    //stole from the plaid app
     private RecyclerView.OnScrollListener toolbarElevation = new RecyclerView.OnScrollListener() {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
@@ -49,18 +53,27 @@ public class CastActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setTitle("Top Billed Cast");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_white_24px);
 
         list = getIntent().getParcelableArrayListExtra("cast");
+        initPadding();
         recyclerView.addOnScrollListener(toolbarElevation);
         CastAdapter adapter = new CastAdapter(list, CastAdapter.TYPE_FULL);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+    }
 
+    private void initPadding() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            final TypedArray styledAttributes = getTheme().obtainStyledAttributes(
+                    new int[]{android.R.attr.actionBarSize});
+            int actionBarSize = (int) styledAttributes.getDimension(0, 0);
+            styledAttributes.recycle();
+            recyclerView.setPadding(0, actionBarSize, 0, 0);
+        }
     }
 
     @Override
